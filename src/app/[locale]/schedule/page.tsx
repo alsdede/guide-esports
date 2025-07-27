@@ -1,5 +1,7 @@
 import { getTranslations } from 'next-intl/server';
-import Image from 'next/image';
+import { MatchCard } from '@/components/MatchCard';
+import { MatchSection } from '@/components/MatchSection';
+import { LanguageSwitcher } from '@/components/LanguageSwitcher';
 import { setRequestLocale } from 'next-intl/server';
 import { Link } from '@/i18n/navigation';
 import { 
@@ -15,88 +17,7 @@ type Props = {
   params: Promise<{ locale: string }>;
 };
 
-function MatchCard({ match, locale }: { match: ScheduleEvent; locale: string }) {
-  const status = getMatchStatusDisplay(match.state, match.startTime);
-  const formattedDate = formatMatchDate(match.startTime, locale === 'pt' ? 'pt-BR' : 'en-US');
 
-  // Proteção para match.match indefinido
-  const matchData = match.match;
-
-  return (
-    <div className="bg-black/30 backdrop-blur-sm rounded-lg p-4 border border-white/10 hover:border-slate-600/50 transition-all">
-      {/* Header */}
-      <div className="flex items-center justify-between mb-4">
-        <div className="flex items-center">
-          <span className="text-xs font-medium text-gray-400 bg-slate-800/50 px-2 py-1 rounded">
-            {match.league?.name || '-'}
-          </span>
-          <span className="text-xs text-gray-500 ml-2">
-            {matchData?.strategy?.count ? `MD${matchData.strategy.count}` : ''}
-          </span>
-        </div>
-        <div className="flex items-center">
-          <span className="text-xs mr-1">{status.icon}</span>
-          <span className={`text-xs font-medium ${status.color}`}>
-            {status.text}
-          </span>
-        </div>
-      </div>
-
-      {/* Teams */}
-      <div className="space-y-3">
-        {Array.isArray(matchData?.teams) && matchData.teams.map((team, index) => (
-          <div key={team.code || team.name || index} className="flex items-center justify-between">
-            <div className="flex items-center">
-              <div className="w-8 h-8 bg-slate-700 rounded-lg flex items-center justify-center mr-3 overflow-hidden">
-                {team.image ? (
-                  <Image
-                    src={team.image.replace(/^http:/, 'https:')}
-                    alt={team.name}
-                    width={32}
-                    height={32}
-                    className="w-full h-full object-contain"
-                  />
-                ) : (
-                  <span className="text-xs font-bold text-white">
-                    {team.code?.charAt(0) || team.name?.charAt(0) || '?'}
-                  </span>
-                )}
-              </div>
-              <div>
-                <p className="text-white font-medium text-sm">{team.name}</p>
-                <p className="text-gray-400 text-xs">{team.code}</p>
-              </div>
-            </div>
-            {/* Score and Record */}
-            <div className="text-right">
-              {team.result && (
-                <div className="flex items-center">
-                  <span className={`text-lg font-bold mr-2 ${
-                    team.result.outcome === 'win' ? 'text-green-400' : 'text-red-400'
-                  }`}>
-                    {team.result.gameWins}
-                  </span>
-                </div>
-              )}
-              {team.record && (
-                <p className="text-xs text-gray-500">
-                  {team.record.wins}V {team.record.losses}D
-                </p>
-              )}
-            </div>
-          </div>
-        ))}
-      </div>
-
-      {/* Match Time */}
-      <div className="mt-4 pt-3 border-t border-white/10">
-        <p className="text-xs text-gray-400 text-center">
-          {formattedDate}
-        </p>
-      </div>
-    </div>
-  );
-}
 
 export default async function SchedulePage({ params }: Props) {
   const { locale } = await params;
@@ -201,117 +122,41 @@ export default async function SchedulePage({ params }: Props) {
         </div>
 
         {/* Live Matches */}
-        <section className="mb-12">
-          <div className="flex items-center justify-between mb-6">
-            <h2 className="text-2xl font-bold text-white flex items-center">
-              <span className="text-red-500 mr-2">🔴</span>
-              {t('liveMatches')}
-            </h2>
-            {liveMatches.length > 0 && (
-              <span className="bg-red-500/20 border border-red-500/30 text-red-300 px-3 py-1 rounded-full text-sm">
-                {liveMatches.length} ao vivo
-              </span>
-            )}
-          </div>
-          
-          {liveMatches.length > 0 ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {liveMatches.map((match, idx) => (
-                <MatchCard key={match.match?.id || idx} match={match} locale={locale} />
-              ))}
-            </div>
-          ) : (
-            <div className="bg-black/20 backdrop-blur-sm rounded-lg p-8 border border-white/10 text-center">
-              <div className="w-16 h-16 bg-gray-500/20 rounded-full mx-auto mb-4 flex items-center justify-center">
-                <span className="text-2xl">⏸️</span>
-              </div>
-              <p className="text-gray-400">{t('noLiveMatches')}</p>
-            </div>
-          )}
-        </section>
+        <MatchSection
+          title={<><span className="text-red-500 mr-2">🔴</span>{t('liveMatches')}</>}
+          matches={liveMatches}
+          locale={locale}
+          emptyIcon={<span className="text-2xl">⏸️</span>}
+          emptyText={t('noLiveMatches')}
+          badgeColor="bg-red-500/20 border border-red-500/30 text-red-300"
+          badgeText={liveMatches.length > 0 ? `${liveMatches.length} ao vivo` : undefined}
+        />
 
         {/* Upcoming Matches */}
-        <section className="mb-12">
-          <div className="flex items-center justify-between mb-6">
-            <h2 className="text-2xl font-bold text-white flex items-center">
-              <span className="text-blue-400 mr-2">📅</span>
-              {t('upcomingMatches')}
-            </h2>
-            {upcomingMatches.length > 0 && (
-              <span className="bg-blue-500/20 border border-blue-500/30 text-blue-300 px-3 py-1 rounded-full text-sm">
-                {upcomingMatches.length} agendadas
-              </span>
-            )}
-          </div>
-          
-          {upcomingMatches.length > 0 ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {upcomingMatches.map((match, idx) => (
-                <MatchCard key={match.match?.id || idx} match={match} locale={locale} />
-              ))}
-            </div>
-          ) : (
-            <div className="bg-black/20 backdrop-blur-sm rounded-lg p-8 border border-white/10 text-center">
-              <div className="w-16 h-16 bg-gray-500/20 rounded-full mx-auto mb-4 flex items-center justify-center">
-                <span className="text-2xl">📭</span>
-              </div>
-              <p className="text-gray-400">{t('noUpcomingMatches')}</p>
-            </div>
-          )}
-        </section>
+        <MatchSection
+          title={<><span className="text-blue-400 mr-2">📅</span>{t('upcomingMatches')}</>}
+          matches={upcomingMatches}
+          locale={locale}
+          emptyIcon={<span className="text-2xl">�</span>}
+          emptyText={t('noUpcomingMatches')}
+          badgeColor="bg-blue-500/20 border border-blue-500/30 text-blue-300"
+          badgeText={upcomingMatches.length > 0 ? `${upcomingMatches.length} agendadas` : undefined}
+        />
 
         {/* Recent Matches */}
-        <section>
-          <div className="flex items-center justify-between mb-6">
-            <h2 className="text-2xl font-bold text-white flex items-center">
-              <span className="text-gray-400 mr-2">✅</span>
-              {t('recentMatches')}
-            </h2>
-            {recentMatches.length > 0 && (
-              <span className="bg-gray-500/20 border border-gray-500/30 text-gray-300 px-3 py-1 rounded-full text-sm">
-                {recentMatches.length} finalizadas
-              </span>
-            )}
-          </div>
-          
-          {recentMatches.length > 0 ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {recentMatches.map((match, idx) => (
-                <MatchCard key={match.match?.id || idx} match={match} locale={locale} />
-              ))}
-            </div>
-          ) : (
-            <div className="bg-black/20 backdrop-blur-sm rounded-lg p-8 border border-white/10 text-center">
-              <div className="w-16 h-16 bg-gray-500/20 rounded-full mx-auto mb-4 flex items-center justify-center">
-                <span className="text-2xl">📊</span>
-              </div>
-              <p className="text-gray-400">{t('noRecentMatches')}</p>
-            </div>
-          )}
-        </section>
+        <MatchSection
+          title={<><span className="text-gray-400 mr-2">✅</span>{t('recentMatches')}</>}
+          matches={recentMatches}
+          locale={locale}
+          emptyIcon={<span className="text-2xl">📊</span>}
+          emptyText={t('noRecentMatches')}
+          badgeColor="bg-gray-500/20 border border-gray-500/30 text-gray-300"
+          badgeText={recentMatches.length > 0 ? `${recentMatches.length} finalizadas` : undefined}
+        />
       </main>
 
       {/* Language Switcher */}
-      <div className="fixed bottom-4 right-4">
-        <div className="bg-black/50 backdrop-blur-sm rounded-lg p-2 border border-white/10">
-          <div className="flex space-x-2">
-            <Link 
-              href="/schedule" 
-              locale="pt" 
-              className={`px-3 py-1 rounded text-sm ${locale === 'pt' ? 'bg-slate-800 text-white' : 'text-gray-400 hover:text-white'}`}
-            >
-              🇧🇷 PT
-            </Link>
-            <Link 
-              href="/schedule" 
-              locale="en" 
-              className={`px-3 py-1 rounded text-sm ${locale === 'en' ? 'bg-slate-800 text-white' : 'text-gray-400 hover:text-white'}`}
-            >
-              🇺🇸 EN
-            </Link>
-          </div>
-        </div>
-      </div>
+      <LanguageSwitcher locale={locale} />
     </div>
   );
 }

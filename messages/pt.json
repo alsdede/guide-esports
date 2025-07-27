@@ -44,12 +44,12 @@
     "confirm": "Confirmar"
   },
   "BettingHouses": {
+    "name": "Nome",
     "title": "Casas de Apostas Licenciadas",
     "subtitle": "Apenas casas de apostas autorizadas pelo Ministério da Fazenda",
     "licensed": "Licenciada",
+    "notLicensed": "Não licenciada",
     "rating": "Avaliação",
-    "minDeposit": "Depósito Mínimo",
-    "maxPayout": "Pagamento Máximo",
     "features": "Recursos",
     "paymentMethods": "Métodos de Pagamento",
     "visitSite": "Visitar Site",
@@ -70,7 +70,12 @@
     "noDepositBonus": "Bônus sem Depósito",
     "loyaltyProgram": "Programa de Fidelidade",
     "founded": "Fundada em",
-    "headquarters": "Sede"
+    "headquarters": "Sede",
+    "searchByName": "Pesquisar por nome...",
+    "coupon": "Cupom",
+    "hasCoupon": "Tem cupom",
+    "noCoupon": "Sem cupom",
+    "actions": "Ações"
   },
   "Schedule": {
     "title": "Agenda de Jogos",

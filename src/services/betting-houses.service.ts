@@ -49,6 +49,7 @@ export interface BettingHouse {
   foundedYear: number;
   headquarters: string;
   lastUpdated: string;
+  coupon?: string; // Cupom promocional opcional
 }
 
 // Mock data - Based on SPA/MF licensed companies in Brazil

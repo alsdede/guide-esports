@@ -44,12 +44,12 @@
     "confirm": "Confirm"
   },
   "BettingHouses": {
+    "name": "Name",
     "title": "Licensed Betting Houses",
     "subtitle": "Only betting houses authorized by the Ministry of Finance",
     "licensed": "Licensed",
+    "notLicensed": "Not licensed",
     "rating": "Rating",
-    "minDeposit": "Minimum Deposit",
-    "maxPayout": "Maximum Payout",
     "features": "Features",
     "paymentMethods": "Payment Methods",
     "visitSite": "Visit Site",
@@ -70,7 +70,12 @@
     "noDepositBonus": "No Deposit Bonus",
     "loyaltyProgram": "Loyalty Program",
     "founded": "Founded in",
-    "headquarters": "Headquarters"
+    "headquarters": "Headquarters",
+    "searchByName": "Search by name...",
+    "coupon": "Coupon",
+    "hasCoupon": "Has coupon",
+    "noCoupon": "No coupon",
+    "actions": "Actions"
   },
   "Schedule": {
     "title": "Match Schedule",
