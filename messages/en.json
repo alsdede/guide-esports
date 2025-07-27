@@ -1,0 +1,44 @@
+{
+  "HomePage": {
+    "title": "Welcome to Esports Betting!",
+    "subtitle": "The best platform for esports betting",
+    "description": "Bet on your favorite games and esports teams with the best odds in the market.",
+    "cta": "Start Betting",
+    "featuredGames": "Featured Games",
+    "liveMatches": "Live Matches",
+    "upcomingMatches": "Upcoming Matches"
+  },
+  "Navigation": {
+    "home": "Home",
+    "games": "Games",
+    "live": "Live",
+    "tournaments": "Tournaments",
+    "stats": "Statistics",
+    "account": "Account",
+    "login": "Login",
+    "register": "Register"
+  },
+  "Footer": {
+    "aboutUs": "About Us",
+    "termsOfService": "Terms of Service",
+    "privacyPolicy": "Privacy Policy",
+    "support": "Support",
+    "contact": "Contact"
+  },
+  "Games": {
+    "lol": "League of Legends",
+    "csgo": "Counter-Strike 2",
+    "valorant": "Valorant",
+    "dota": "Dota 2",
+    "fortnite": "Fortnite"
+  },
+  "Common": {
+    "loading": "Loading...",
+    "error": "Error",
+    "retry": "Retry",
+    "close": "Close",
+    "save": "Save",
+    "cancel": "Cancel",
+    "confirm": "Confirm"
+  }
+}

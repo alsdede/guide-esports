@@ -1,0 +1,44 @@
+{
+  "HomePage": {
+    "title": "Bem-vindos às Apostas Esportivas!",
+    "subtitle": "A melhor plataforma para apostar em esports",
+    "description": "Aposte nos seus jogos favoritos e times de esports com as melhores odds do mercado.",
+    "cta": "Começar Apostas",
+    "featuredGames": "Jogos em Destaque",
+    "liveMatches": "Partidas Ao Vivo",
+    "upcomingMatches": "Próximas Partidas"
+  },
+  "Navigation": {
+    "home": "Início",
+    "games": "Jogos",
+    "live": "Ao Vivo",
+    "tournaments": "Torneios",
+    "stats": "Estatísticas",
+    "account": "Conta",
+    "login": "Entrar",
+    "register": "Cadastrar"
+  },
+  "Footer": {
+    "aboutUs": "Sobre Nós",
+    "termsOfService": "Termos de Serviço",
+    "privacyPolicy": "Política de Privacidade",
+    "support": "Suporte",
+    "contact": "Contato"
+  },
+  "Games": {
+    "lol": "League of Legends",
+    "csgo": "Counter-Strike 2",
+    "valorant": "Valorant",
+    "dota": "Dota 2",
+    "fortnite": "Fortnite"
+  },
+  "Common": {
+    "loading": "Carregando...",
+    "error": "Erro",
+    "retry": "Tentar Novamente",
+    "close": "Fechar",
+    "save": "Salvar",
+    "cancel": "Cancelar",
+    "confirm": "Confirmar"
+  }
+}
