@@ -1,6 +1,8 @@
 import { getTranslations } from 'next-intl/server';
 import { setRequestLocale } from 'next-intl/server';
 import { Link } from '@/i18n/navigation';
+import NewsCard from '@/components/NewsCard';
+import Image from 'next/image';
 
 type Props = {
   params: Promise<{ locale: string }>;
@@ -61,21 +63,51 @@ export default async function HomePage({ params }: Props) {
         </nav>
       </header>
 
-      {/* Hero Section */}
+
+      {/* Hero Section + News */}
       <main className="container mx-auto px-4 py-16">
-        <div className="text-center mb-16">
-          <h1 className="text-5xl md:text-7xl font-bold text-white mb-6">
-            {t('title')}
-          </h1>
-          <p className="text-xl text-gray-300 mb-8 max-w-2xl mx-auto">
-            {t('description')}
-          </p>
-          <Link 
-            href="/games" 
-            className="inline-block px-8 py-4 bg-gradient-to-r from-slate-700 to-slate-800 text-white font-semibold rounded-lg hover:from-slate-800 hover:to-slate-900 transition-all transform hover:scale-105"
-          >
-            {t('cta')}
-          </Link>
+        <div className="flex flex-col items-center w-full mb-16">
+          <div className="text-center mb-10">
+            <h1 className="text-5xl md:text-7xl font-bold text-white mb-6">
+              {t('title')}
+            </h1>
+            <p className="text-xl text-gray-300 mb-8 max-w-2xl mx-auto">
+              {t('description')}
+            </p>
+          </div>
+          {/* News Area */}
+          <div className="flex flex-col md:flex-row w-full gap-8 items-center justify-center">
+            {/* Lateral News Card Left */}
+            <NewsCard
+              imageUrl="/news-lol.jpg"
+              title="Final do CBLOL: Pain x Fluxo"
+              description="A grande final do CBLOL acontece neste domingo, com Pain e Fluxo disputando o título."
+              date="27/07/2025"
+              tag="LOL"
+              tagColor="bg-purple-600"
+              className="hidden md:block w-64"
+            />
+            {/* Central News Card (maior) */}
+            <NewsCard
+              imageUrl="/news-bet.jpg"
+              title="Apostas esportivas legalizadas no Brasil!"
+              description="SPA/MF concede licenças para as principais casas de apostas. Veja a lista completa e aposte com segurança."
+              date="27/07/2025"
+              tag="BET"
+              tagColor="bg-green-600"
+              className="w-full md:w-[420px] shadow-2xl scale-105"
+            />
+            {/* Lateral News Card Right */}
+            <NewsCard
+              imageUrl="/news-dota.jpg"
+              title="Dota 2: Major de Singapura"
+              description="O Major de Dota 2 em Singapura reúne as melhores equipes do mundo em busca do título."
+              date="26/07/2025"
+              tag="DOTA"
+              tagColor="bg-red-600"
+              className="hidden md:block w-64"
+            />
+          </div>
         </div>
 
         {/* Featured Games */}
@@ -84,61 +116,23 @@ export default async function HomePage({ params }: Props) {
             {t('featuredGames')}
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+
             {/* League of Legends */}
-            <div className="bg-black/30 backdrop-blur-sm rounded-lg p-6 border border-white/10 hover:border-slate-600/50 transition-colors">
-              <div className="w-16 h-16 bg-gradient-to-br from-yellow-400 to-blue-600 rounded-lg mb-4 flex items-center justify-center text-2xl">
-                🏆
-              </div>
-              <h3 className="text-xl font-semibold text-white mb-2">
-                {tGames('lol')}
-              </h3>
-              <p className="text-gray-400 mb-4">
-                World Championship 2025
-              </p>
-              <Link 
-                href="/games/lol" 
-                className="text-slate-300 hover:text-slate-200 font-medium"
-              >
-                Ver Apostas →
-              </Link>
+            <div className="flex flex-col items-center">
+              <Image src="/imgs/logos/LOL.webp" alt="League of Legends" width={108} height={108} className="object-contain w-20 h-20 mb-2" />
+              <span className="text-lg font-semibold text-white">{tGames('lol')}</span>
             </div>
 
             {/* CS2 */}
-            <div className="bg-black/30 backdrop-blur-sm rounded-lg p-6 border border-white/10 hover:border-slate-600/50 transition-colors">
-              <div className="w-16 h-16 bg-gradient-to-br from-orange-400 to-red-600 rounded-lg mb-4 flex items-center justify-center text-2xl">
-                🔫
-              </div>
-              <h3 className="text-xl font-semibold text-white mb-2">
-                {tGames('csgo')}
-              </h3>
-              <p className="text-gray-400 mb-4">
-                Major Championship
-              </p>
-              <Link 
-                href="/games/cs2" 
-                className="text-slate-300 hover:text-slate-200 font-medium"
-              >
-                Ver Apostas →
-              </Link>
+            <div className="flex flex-col items-center">
+              <Image src="/imgs/logos/CSGO.png" alt="CS2" width={108} height={108} className="object-contain w-20 h-20 mb-2" />
+              <span className="text-lg font-semibold text-white">{tGames('csgo')}</span>
             </div>
 
-            {/* Valorant */}
-            <div className="bg-black/30 backdrop-blur-sm rounded-lg p-6 border border-white/10 hover:border-slate-600/50 transition-colors">
-              <div className="w-16 h-16 bg-gradient-to-br from-pink-400 to-red-600 rounded-lg mb-4 flex items-center justify-center text-2xl">
-                🎯
-              </div>
-              <h3 className="text-xl font-semibold text-white mb-2">
-                {tGames('valorant')}
-              </h3>
-              <p className="text-gray-400 mb-4">
-                Champions Tour
-              </p>
-              <Link 
-                href="/games/valorant" 
-                className="text-slate-300 hover:text-slate-200 font-medium"
-              >
-                Ver Apostas →
-              </Link>
+            {/* Valorant (usando logo do DOTA2 como exemplo, ajuste se tiver logo do Valorant) */}
+            <div className="flex flex-col items-center">
+              <Image src="/imgs/logos/DOTA2.png" alt="Valorant" width={108} height={108} className="object-contain w-20 h-20 mb-2" />
+              <span className="text-lg font-semibold text-white">{tGames('valorant')}</span>
             </div>
           </div>
         </section>

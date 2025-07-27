@@ -4,6 +4,7 @@ import { Link } from '@/i18n/navigation';
 
 import { Card } from '@/components/ui/card';
 import BettingHousesTableWrapper from '@/components/BettingHousesTableWrapper';
+import NewsCard from '@/components/NewsCard';
 // import { cn } from '@/lib/utils';
 import { getAllBettingHouses } from '@/services/betting-houses.service';
 
@@ -36,6 +37,7 @@ export default async function BettingHousesPage({ params }: { params: Promise<{ 
     digitalWallet: t('digitalWallet'),
   };
   return (
+
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-gray-900">
       {/* Header */}
       <header className="bg-black/40 backdrop-blur-sm border-b border-white/10">
@@ -79,6 +81,41 @@ export default async function BettingHousesPage({ params }: { params: Promise<{ 
 
       {/* Main Content */}
       <main className="container mx-auto px-2 sm:px-4 md:px-8 lg:px-16 xl:px-32 2xl:px-64 py-16 flex flex-col items-center">
+        {/* Hero Section + News */}
+        <div className="w-full flex flex-col items-center mb-12">
+          <div className="flex flex-col md:flex-row w-full gap-8 items-center justify-center">
+            {/* Lateral News Card Left */}
+            <NewsCard
+              imageUrl="/news-lol.jpg"
+              title="Final do CBLOL: Pain x Fluxo"
+              description="A grande final do CBLOL acontece neste domingo, com Pain e Fluxo disputando o título."
+              date="27/07/2025"
+              tag="LOL"
+              tagColor="bg-purple-600"
+              className="hidden md:block w-64"
+            />
+            {/* Central News Card (maior) */}
+            <NewsCard
+              imageUrl="/news-bet.jpg"
+              title="Apostas esportivas legalizadas no Brasil!"
+              description="SPA/MF concede licenças para as principais casas de apostas. Veja a lista completa e aposte com segurança."
+              date="27/07/2025"
+              tag="BET"
+              tagColor="bg-green-600"
+              className="w-full md:w-[420px] shadow-2xl scale-105"
+            />
+            {/* Lateral News Card Right */}
+            <NewsCard
+              imageUrl="/news-dota.jpg"
+              title="Dota 2: Major de Singapura"
+              description="O Major de Dota 2 em Singapura reúne as melhores equipes do mundo em busca do título."
+              date="26/07/2025"
+              tag="DOTA"
+              tagColor="bg-red-600"
+              className="hidden md:block w-64"
+            />
+          </div>
+        </div>
         {/* Page Header */}
         <div className="text-center mb-12">
           <div className="inline-flex items-center justify-center w-16 h-16 bg-green-500/20 rounded-full mb-6">
