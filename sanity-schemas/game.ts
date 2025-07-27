@@ -1,8 +1,10 @@
 // Esquemas para o Sanity Studio
 // Coloque estes arquivos na pasta sanity/schemas/
 
+import type { Rule } from '@sanity/types';
+
 // schemas/game.ts
-export default {
+const gameSchema = {
   name: 'game',
   title: 'Jogo/Game',
   type: 'document',
@@ -11,7 +13,7 @@ export default {
       name: 'name',
       title: 'Nome do Jogo',
       type: 'string',
-      validation: (Rule: any) => Rule.required()
+      validation: (Rule: Rule) => Rule.required()
     },
     {
       name: 'slug',
@@ -21,7 +23,7 @@ export default {
         source: 'name',
         maxLength: 96,
       },
-      validation: (Rule: any) => Rule.required()
+      validation: (Rule: Rule) => Rule.required()
     },
     {
       name: 'title_pt',
@@ -78,4 +80,6 @@ export default {
       media: 'image'
     }
   }
-}
+};
+
+export default gameSchema;

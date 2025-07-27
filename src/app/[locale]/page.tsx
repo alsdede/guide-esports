@@ -17,25 +17,31 @@ export default async function HomePage({ params }: Props) {
   const tGames = await getTranslations('Games');
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-gray-900">
       {/* Header */}
-      <header className="bg-black/20 backdrop-blur-sm border-b border-white/10">
+      <header className="bg-black/40 backdrop-blur-sm border-b border-white/10">
         <nav className="container mx-auto px-4 py-4 flex items-center justify-between">
           <div className="text-2xl font-bold text-white">
             🎮 BetEsports
           </div>
           <div className="hidden md:flex space-x-6">
-            <Link href="/" className="text-white hover:text-purple-300 transition-colors">
+            <Link href="/" className="text-white hover:text-slate-300 transition-colors">
               {tNav('home')}
             </Link>
-            <Link href="/games" className="text-white hover:text-purple-300 transition-colors">
+            <Link href="/games" className="text-white hover:text-slate-300 transition-colors">
               {tNav('games')}
             </Link>
-            <Link href="/live" className="text-white hover:text-purple-300 transition-colors">
+            <Link href="/live" className="text-white hover:text-slate-300 transition-colors">
               {tNav('live')}
             </Link>
-            <Link href="/tournaments" className="text-white hover:text-purple-300 transition-colors">
+            <Link href="/tournaments" className="text-white hover:text-slate-300 transition-colors">
               {tNav('tournaments')}
+            </Link>
+            <Link href="/schedule" className="text-white hover:text-slate-300 transition-colors">
+              {tNav('schedule')}
+            </Link>
+            <Link href="/betting-houses" className="text-white hover:text-slate-300 transition-colors">
+              {tNav('bettingHouses')}
             </Link>
           </div>
           <div className="flex space-x-3">
@@ -47,7 +53,7 @@ export default async function HomePage({ params }: Props) {
             </Link>
             <Link 
               href="/register" 
-              className="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors"
+              className="px-4 py-2 bg-slate-800 text-white rounded-lg hover:bg-slate-900 transition-colors"
             >
               {tNav('register')}
             </Link>
@@ -66,7 +72,7 @@ export default async function HomePage({ params }: Props) {
           </p>
           <Link 
             href="/games" 
-            className="inline-block px-8 py-4 bg-gradient-to-r from-purple-600 to-pink-600 text-white font-semibold rounded-lg hover:from-purple-700 hover:to-pink-700 transition-all transform hover:scale-105"
+            className="inline-block px-8 py-4 bg-gradient-to-r from-slate-700 to-slate-800 text-white font-semibold rounded-lg hover:from-slate-800 hover:to-slate-900 transition-all transform hover:scale-105"
           >
             {t('cta')}
           </Link>
@@ -79,7 +85,7 @@ export default async function HomePage({ params }: Props) {
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {/* League of Legends */}
-            <div className="bg-black/30 backdrop-blur-sm rounded-lg p-6 border border-white/10 hover:border-purple-500/50 transition-colors">
+            <div className="bg-black/30 backdrop-blur-sm rounded-lg p-6 border border-white/10 hover:border-slate-600/50 transition-colors">
               <div className="w-16 h-16 bg-gradient-to-br from-yellow-400 to-blue-600 rounded-lg mb-4 flex items-center justify-center text-2xl">
                 🏆
               </div>
@@ -91,14 +97,14 @@ export default async function HomePage({ params }: Props) {
               </p>
               <Link 
                 href="/games/lol" 
-                className="text-purple-400 hover:text-purple-300 font-medium"
+                className="text-slate-300 hover:text-slate-200 font-medium"
               >
                 Ver Apostas →
               </Link>
             </div>
 
             {/* CS2 */}
-            <div className="bg-black/30 backdrop-blur-sm rounded-lg p-6 border border-white/10 hover:border-purple-500/50 transition-colors">
+            <div className="bg-black/30 backdrop-blur-sm rounded-lg p-6 border border-white/10 hover:border-slate-600/50 transition-colors">
               <div className="w-16 h-16 bg-gradient-to-br from-orange-400 to-red-600 rounded-lg mb-4 flex items-center justify-center text-2xl">
                 🔫
               </div>
@@ -110,14 +116,14 @@ export default async function HomePage({ params }: Props) {
               </p>
               <Link 
                 href="/games/cs2" 
-                className="text-purple-400 hover:text-purple-300 font-medium"
+                className="text-slate-300 hover:text-slate-200 font-medium"
               >
                 Ver Apostas →
               </Link>
             </div>
 
             {/* Valorant */}
-            <div className="bg-black/30 backdrop-blur-sm rounded-lg p-6 border border-white/10 hover:border-purple-500/50 transition-colors">
+            <div className="bg-black/30 backdrop-blur-sm rounded-lg p-6 border border-white/10 hover:border-slate-600/50 transition-colors">
               <div className="w-16 h-16 bg-gradient-to-br from-pink-400 to-red-600 rounded-lg mb-4 flex items-center justify-center text-2xl">
                 🎯
               </div>
@@ -129,7 +135,7 @@ export default async function HomePage({ params }: Props) {
               </p>
               <Link 
                 href="/games/valorant" 
-                className="text-purple-400 hover:text-purple-300 font-medium"
+                className="text-slate-300 hover:text-slate-200 font-medium"
               >
                 Ver Apostas →
               </Link>
@@ -161,14 +167,14 @@ export default async function HomePage({ params }: Props) {
             <Link 
               href="/" 
               locale="pt" 
-              className={`px-3 py-1 rounded text-sm ${locale === 'pt' ? 'bg-purple-600 text-white' : 'text-gray-400 hover:text-white'}`}
+              className={`px-3 py-1 rounded text-sm ${locale === 'pt' ? 'bg-slate-800 text-white' : 'text-gray-400 hover:text-white'}`}
             >
               🇧🇷 PT
             </Link>
             <Link 
               href="/" 
               locale="en" 
-              className={`px-3 py-1 rounded text-sm ${locale === 'en' ? 'bg-purple-600 text-white' : 'text-gray-400 hover:text-white'}`}
+              className={`px-3 py-1 rounded text-sm ${locale === 'en' ? 'bg-slate-800 text-white' : 'text-gray-400 hover:text-white'}`}
             >
               🇺🇸 EN
             </Link>

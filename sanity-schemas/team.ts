@@ -1,5 +1,5 @@
 // schemas/team.ts
-export default {
+const teamSchema = {
   name: 'team',
   title: 'Time/Team',
   type: 'document',
@@ -78,4 +78,6 @@ export default {
       media: 'logo'
     }
   }
-}
+};
+
+export default teamSchema;

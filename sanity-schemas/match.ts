@@ -1,5 +1,5 @@
 // schemas/match.ts
-export default {
+const matchSchema = {
   name: 'match',
   title: 'Partida/Match',
   type: 'document',
@@ -88,4 +88,6 @@ export default {
       subtitle: 'tournament.name'
     }
   }
-}
+};
+
+export default matchSchema;

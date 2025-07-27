@@ -1,5 +1,5 @@
 // schemas/tournament.ts
-export default {
+const tournamentSchema = {
   name: 'tournament',
   title: 'Torneio/Tournament', 
   type: 'document',
@@ -86,4 +86,6 @@ export default {
       media: 'image'
     }
   }
-}
+};
+
+export default tournamentSchema;
