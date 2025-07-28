@@ -39,88 +39,13 @@ export default async function BettingHousesPage({ params }: { params: Promise<{ 
   return (
 
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-gray-900">
-      {/* Header */}
-      <header className="bg-black/40 backdrop-blur-sm border-b border-white/10">
-        <nav className="container mx-auto px-4 py-4 flex items-center justify-between">
-          <div className="text-2xl font-bold text-white">
-            🎮 BetEsports
-          </div>
-          <div className="hidden md:flex space-x-6">
-            <Link href="/" className="text-white hover:text-slate-300 transition-colors">
-              {tNav('home')}
-            </Link>
-            <Link href="/games" className="text-white hover:text-slate-300 transition-colors">
-              {tNav('games')}
-            </Link>
-            <Link href="/live" className="text-white hover:text-slate-300 transition-colors">
-              {tNav('live')}
-            </Link>
-            <Link href="/tournaments" className="text-white hover:text-slate-300 transition-colors">
-              {tNav('tournaments')}
-            </Link>
-            <Link href="/betting-houses" className="text-slate-300 hover:text-slate-200 transition-colors font-medium">
-              {tNav('bettingHouses')}
-            </Link>
-          </div>
-          <div className="flex space-x-3">
-            <Link 
-              href="/login" 
-              className="px-4 py-2 text-white border border-white/30 rounded-lg hover:bg-white/10 transition-colors"
-            >
-              {tNav('login')}
-            </Link>
-            <Link 
-              href="/register" 
-              className="px-4 py-2 bg-slate-800 text-white rounded-lg hover:bg-slate-900 transition-colors"
-            >
-              {tNav('register')}
-            </Link>
-          </div>
-        </nav>
-      </header>
-
+    
       {/* Main Content */}
       <main className="container mx-auto px-2 sm:px-4 md:px-8 lg:px-16 xl:px-32 2xl:px-64 py-16 flex flex-col items-center">
-        {/* Hero Section + News */}
-        <div className="w-full flex flex-col items-center mb-12">
-          <div className="flex flex-col md:flex-row w-full gap-8 items-center justify-center">
-            {/* Lateral News Card Left */}
-            <NewsCard
-              imageUrl="/news-lol.jpg"
-              title="Final do CBLOL: Pain x Fluxo"
-              description="A grande final do CBLOL acontece neste domingo, com Pain e Fluxo disputando o título."
-              date="27/07/2025"
-              tag="LOL"
-              tagColor="bg-purple-600"
-              className="hidden md:block w-64"
-            />
-            {/* Central News Card (maior) */}
-            <NewsCard
-              imageUrl="/news-bet.jpg"
-              title="Apostas esportivas legalizadas no Brasil!"
-              description="SPA/MF concede licenças para as principais casas de apostas. Veja a lista completa e aposte com segurança."
-              date="27/07/2025"
-              tag="BET"
-              tagColor="bg-green-600"
-              className="w-full md:w-[420px] shadow-2xl scale-105"
-            />
-            {/* Lateral News Card Right */}
-            <NewsCard
-              imageUrl="/news-dota.jpg"
-              title="Dota 2: Major de Singapura"
-              description="O Major de Dota 2 em Singapura reúne as melhores equipes do mundo em busca do título."
-              date="26/07/2025"
-              tag="DOTA"
-              tagColor="bg-red-600"
-              className="hidden md:block w-64"
-            />
-          </div>
-        </div>
+      
         {/* Page Header */}
         <div className="text-center mb-12">
-          <div className="inline-flex items-center justify-center w-16 h-16 bg-green-500/20 rounded-full mb-6">
-            <span className="text-3xl">🏛️</span>
-          </div>
+       
           <h1 className="text-4xl md:text-6xl font-bold text-white mb-6">
             {t('title')}
           </h1>

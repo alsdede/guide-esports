@@ -1,4 +1,13 @@
 {
+  "Contact": {
+    "title": "Contact Us",
+    "subtitle": "Send your message, question or suggestion.",
+    "name": "Name",
+    "email": "Email",
+    "message": "Message",
+    "send": "Send",
+    "backHome": "Back to home"
+  },
   "HomePage": {
     "title": "Welcome to Esports Betting!",
     "subtitle": "The best platform for esports betting",
@@ -18,7 +27,8 @@
     "stats": "Statistics",
     "account": "Account",
     "login": "Login",
-    "register": "Register"
+    "register": "Register",
+    "bePartner": "Be a Partner"
   },
   "Footer": {
     "aboutUs": "About Us",

@@ -1,4 +1,13 @@
 {
+  "Contact": {
+    "title": "Fale Conosco",
+    "subtitle": "Envie sua mensagem, dúvida ou sugestão.",
+    "name": "Nome",
+    "email": "E-mail",
+    "message": "Mensagem",
+    "send": "Enviar",
+    "backHome": "Voltar para o início"
+  },
   "HomePage": {
     "title": "Bem-vindos às Apostas Esportivas!",
     "subtitle": "A melhor plataforma para apostar em esports",
@@ -15,10 +24,12 @@
     "tournaments": "Torneios",
     "schedule": "Agenda",
     "bettingHouses": "Casas de Apostas",
+    "contact": "Contato",
     "stats": "Estatísticas",
     "account": "Conta",
     "login": "Entrar",
-    "register": "Cadastrar"
+    "register": "Cadastrar",
+    "bePartner":"Seja Parceiro"
   },
   "Footer": {
     "aboutUs": "Sobre Nós",

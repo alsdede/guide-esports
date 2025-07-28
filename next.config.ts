@@ -12,6 +12,16 @@ const nextConfig: NextConfig = {
         hostname: 'static.lolesports.com',
         pathname: '/**',
       },
+      {
+        protocol: 'https',
+        hostname: 'noticias.maisesports.com.br',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'images.unsplash.com',
+        pathname: '/**',
+      },
     ],
   },
   /* config options here */
