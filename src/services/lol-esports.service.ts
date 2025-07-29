@@ -1,3 +1,28 @@
+// Busca torneios de uma liga específica
+export const getTournamentsForLeague = async (leagueId: string, hl: string = "pt-BR") => {
+  try {
+    const params = new URLSearchParams({ hl, leagueId });
+    const response = await lolesportsApiClient.get<{
+      data: {
+        leagues: Array<{
+          tournaments: Array<{
+            id: string;
+            name: string;
+            slug: string;
+            startDate: string;
+            endDate: string;
+          }>;
+        }>; 
+      };
+    }>(`/getLeagues?${params}`);
+    console.log("TOURNAMENT ID ",response.data.data)
+    const tournaments = response.data.data.leagues[0]?.tournaments || [];
+    return tournaments;
+  } catch (error) {
+    console.error('Failed to fetch tournaments for league:', error);
+    return [];
+  }
+};
 // LoL Esports API service
 // For tournaments, matches, schedules, standings
 
@@ -243,28 +268,15 @@ export const getEventDetails = async (eventId: string): Promise<Match | null> =>
 };
 
 // Get tournament standings
-export const getStandings = async (tournamentId: string): Promise<Standing[]> => {
+export const getStandings = async (tournamentId: string, hl: string = "pt-BR"): Promise<Standing[]> => {
   try {
-    const response = await lolesportsApiClient.get<{
-      data: {
-        standings: {
-          stages: Array<{
-            sections: Array<{
-              rankings: Standing[];
-            }>;
-          }>;
-        };
-      };
-    }>(`/getStandings?hl=pt-BR&tournamentId=${tournamentId}`);
-
-    // Flatten the nested structure
+    const response = await lolesportsApiClient.get<any>(`/getStandings?hl=${hl}&tournamentId=${tournamentId}`);
     const standings: Standing[] = [];
-    response.data.data.standings.stages.forEach(stage => {
-      stage.sections.forEach(section => {
+    response.data.data.standings.stages.forEach((stage: any) => {
+      stage.sections.forEach((section: any) => {
         standings.push(...section.rankings);
       });
     });
-
     return standings;
   } catch (error) {
     console.error('Failed to fetch standings:', error);

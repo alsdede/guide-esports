@@ -42,8 +42,8 @@ export default async function HomePage({ params }: Props) {
             </div>
           </div>
         </div>
-        <FeaturedGamesSection tGames={tGames} />
-        <LiveMatchesSection />
+        {/* <FeaturedGamesSection tGames={tGames} />
+        <LiveMatchesSection /> */}
       </main>
     </div>
   );

@@ -1,0 +1,22 @@
+{
+  "featuredGames": [
+    {
+      "_id": "1",
+      "name": "League of Legends",
+      "logo": "/imgs/logos/LOL.webp",
+      "alt": "League of Legends"
+    },
+    {
+      "_id": "2",
+      "name": "CS2",
+      "logo": "/imgs/logos/CSGO.png",
+      "alt": "CS2"
+    },
+    {
+      "_id": "3",
+      "name": "Valorant",
+      "logo": "/imgs/logos/DOTA2.png",
+      "alt": "Valorant"
+    }
+  ]
+}

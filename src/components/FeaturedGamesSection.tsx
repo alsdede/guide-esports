@@ -1,53 +1,40 @@
 import Image from "next/image";
-type Props = {
-  tGames: (key: string) => string;
+
+type Game = {
+  _id: string;
+  name: string;
+  logo: string; // url da imagem
+  alt?: string;
 };
-export default function FeaturedGamesSection({ tGames }: Props) {
+
+type Props = {
+  games?: Game[];
+  title?: string;
+};
+
+export default function FeaturedGamesSection(props: Props) {
+  const { games, title } = props;
+  if (!games || games.length === 0) return null;
   return (
     <section className="mb-16">
       <h2 className="text-3xl font-bold text-white mb-8 text-center">
-        Jogos em Destaque
+        {title || "Jogos em Destaque"}
       </h2>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {/* League of Legends */}
-        <div className="flex flex-col items-center">
-          <Image
-            src="/imgs/logos/LOL.webp"
-            alt="League of Legends"
-            width={108}
-            height={108}
-            className="object-contain w-20 h-20 mb-2"
-          />
-          <span className="text-lg font-semibold text-white">
-            {tGames("lol")}
-          </span>
-        </div>
-        {/* CS2 */}
-        <div className="flex flex-col items-center">
-          <Image
-            src="/imgs/logos/CSGO.png"
-            alt="CS2"
-            width={108}
-            height={108}
-            className="object-contain w-20 h-20 mb-2"
-          />
-          <span className="text-lg font-semibold text-white">
-            {tGames("csgo")}
-          </span>
-        </div>
-        {/* Valorant (usando logo do DOTA2 como exemplo, ajuste se tiver logo do Valorant) */}
-        <div className="flex flex-col items-center">
-          <Image
-            src="/imgs/logos/DOTA2.png"
-            alt="Valorant"
-            width={108}
-            height={108}
-            className="object-contain w-20 h-20 mb-2"
-          />
-          <span className="text-lg font-semibold text-white">
-            {tGames("valorant")}
-          </span>
-        </div>
+        {games.map((game) => (
+          <div key={game._id} className="flex flex-col items-center">
+            <Image
+              src={game.logo}
+              alt={game.alt || game.name}
+              width={108}
+              height={108}
+              className="object-contain w-20 h-20 mb-2"
+            />
+            <span className="text-lg font-semibold text-white">
+              {game.name}
+            </span>
+          </div>
+        ))}
       </div>
     </section>
   );

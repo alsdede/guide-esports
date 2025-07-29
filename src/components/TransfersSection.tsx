@@ -1,7 +1,7 @@
 export default function TransfersSection() {
   return (
     <div className="flex flex-col justify-center w-full">
-      <div className="bg-gradient-to-br from-slate-900/80 via-slate-800/70 to-gray-900/80 rounded-xl shadow-lg p-4 border border-white/10 w-full backdrop-blur-md backdrop-saturate-150">
+      <div className="bg-gradient-to-br from-slate-900 via-slate-800/70 to-gray-900/80 rounded-xl shadow-lg p-4 border border-white/10 w-full backdrop-blur-md backdrop-saturate-150">
         <h4 className="text-white font-semibold text-base mb-3 flex items-center gap-2">
           <span className="text-blue-400">🔄</span> Últimas transferências LoL
         </h4>

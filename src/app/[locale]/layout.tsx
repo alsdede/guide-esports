@@ -9,6 +9,7 @@ import { setRequestLocale } from 'next-intl/server';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import "../globals.css";
+import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -108,6 +109,8 @@ export default async function LocaleLayout({
             </defs>
           </svg>
           {children}
+             {/* Language Switcher */}
+      <LanguageSwitcher locale={locale} />
           <Footer />
         </NextIntlClientProvider>
       </body>

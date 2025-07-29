@@ -1,0 +1,84 @@
+{
+  "standings": [
+    {
+      "stages": [
+        {
+          "name": "Split de Verão",
+          "type": "groups",
+          "slug": "summer",
+          "sections": [
+            {
+              "name": "Grupo A",
+              "matches": [],
+              "rankings": [
+                {
+                  "ordinal": 1,
+                  "teams": [
+                    {
+                      "code": "T1",
+                      "image": "/imgs/teams/t1.png",
+                      "name": "T1",
+                      "id": "t1",
+                      "slug": "t1",
+                      "record": { "losses": 2, "wins": 8 }
+                    }
+                  ]
+                },
+                {
+                  "ordinal": 2,
+                  "teams": [
+                    {
+                      "code": "GEN",
+                      "image": "/imgs/teams/gen.png",
+                      "name": "Gen.G",
+                      "id": "gen",
+                      "slug": "gen",
+                      "record": { "losses": 3, "wins": 7 }
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "Playoffs",
+          "type": "bracket",
+          "slug": "playoffs",
+          "sections": [
+            {
+              "name": "Quartas de Finais",
+              "matches": [
+                {
+                  "teams": [
+                    {
+                      "code": "T1",
+                      "image": "/imgs/teams/t1.png",
+                      "name": "T1",
+                      "id": "t1",
+                      "slug": "t1",
+                      "result": { "gameWins": 3, "outcome": "win" }
+                    },
+                    {
+                      "code": "GEN",
+                      "image": "/imgs/teams/gen.png",
+                      "name": "Gen.G",
+                      "id": "gen",
+                      "slug": "gen",
+                      "result": { "gameWins": 1, "outcome": "loss" }
+                    }
+                  ],
+                  "id": "match1",
+                  "state": "completed",
+                  "previousMatchIds": [],
+                  "flags": ""
+                }
+              ],
+              "rankings": []
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
