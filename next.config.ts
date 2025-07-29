@@ -5,6 +5,8 @@ const withNextIntl = createNextIntlPlugin();
 
 
 const nextConfig: NextConfig = {
+  reactStrictMode: true,
+  swcMinify: true,
   images: {
     remotePatterns: [
       {
@@ -20,6 +22,11 @@ const nextConfig: NextConfig = {
       {
         protocol: 'https',
         hostname: 'images.unsplash.com',
+        pathname: '/**',
+      },
+        {
+        protocol: 'http',
+        hostname: 'static.lolesports.com',
         pathname: '/**',
       },
     ],
