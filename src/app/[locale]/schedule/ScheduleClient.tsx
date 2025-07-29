@@ -70,16 +70,15 @@ export default function ScheduleClient({
   noRecentLabel,
 }: Props) {
   const [search, setSearch] = useState("");
-  const [selectedLeague, setSelectedLeague] = useState<string | undefined>(
-    undefined
-  );
+  // Selected leagues (multiple selection)
+  const [selectedLeagues, setSelectedLeagues] = useState<string[]>([]);
   const [status, setStatus] = useState<string | undefined>(undefined);
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined);
 
   // Clear all filters
   function clearFilters() {
     setSearch("");
-    setSelectedLeague(undefined);
+    setSelectedLeagues([]);
     setStatus(undefined);
     setSelectedDate(undefined);
   }
@@ -97,8 +96,10 @@ export default function ScheduleClient({
         !searchLower ||
         teamNames.includes(searchLower) ||
         leagueName.includes(searchLower);
-      // League filter
-      const byLeague = !selectedLeague || match.league?.id === selectedLeague;
+      // League filter (multiple selection)
+      const byLeague =
+        selectedLeagues.length === 0 ||
+        selectedLeagues.includes(match.league?.id);
       // Status filter
       let byStatus = true;
       if (status === "live") byStatus = match.state === "inProgress";
@@ -151,7 +152,7 @@ export default function ScheduleClient({
       </div>
       {/* Filtros e busca */}
       <div className="flex flex-col md:flex-row md:items-start gap-4 mb-10">
-        <div className="flex-1 flex flex-col md:flex-row md:items-start gap-4">
+        <div className="flex-1 flex flex-col md:flex-row md:items-end gap-4">
           <div className="flex flex-col md:flex-row gap-4 flex-1">
             <div className="flex flex-col gap-1 md:w-72">
               <Label htmlFor="search" className="text-white">
@@ -208,30 +209,44 @@ export default function ScheduleClient({
               <ul className="h-full">
                 <li
                   key="all"
-                  className={`flex items-center gap-3 px-3 py-2 rounded-lg cursor-pointer transition border border-transparent ${!selectedLeague ? "bg-slate-700 text-white border-slate-500" : "hover:bg-slate-800 text-white"}`}
-                  onClick={() => setSelectedLeague(undefined)}
+                  className={`flex items-center gap-3 px-3 py-2 rounded-lg cursor-pointer transition border border-transparent ${selectedLeagues.length === 0 ? "bg-slate-700 text-white border-slate-500" : "hover:bg-slate-800 text-white"}`}
+                  onClick={() => setSelectedLeagues([])}
                 >
                   <span className="w-8 h-8 flex items-center justify-center bg-slate-600 rounded-full text-lg font-bold">
                     🌐
                   </span>
                   <span className="font-medium">Todas as ligas</span>
                 </li>
-                {leagues.map((l) => (
-                  <li
-                    key={l.id}
-                    className={`flex items-center gap-3 px-3 py-2 rounded-lg cursor-pointer transition border border-transparent ${selectedLeague === l.id ? "bg-slate-700 text-white border-slate-500" : "hover:bg-slate-800 text-white"}`}
-                    onClick={() => setSelectedLeague(l.id)}
-                  >
-                    <Image
-                      src={l.image || "/league.svg"}
-                      alt={l.name}
-                      width={32}
-                      height={32}
-                      className="rounded-full object-contain bg-slate-600"
-                    />
-                    <span className="font-medium">{l.name}</span>
-                  </li>
-                ))}
+                {leagues.map((l) => {
+                  const selected = selectedLeagues.includes(l.id);
+                  return (
+                    <li
+                      key={l.id}
+                      className={`flex items-center gap-3 px-3 py-2 rounded-lg cursor-pointer transition border border-transparent ${selected ? "bg-slate-700 text-white border-slate-500" : "hover:bg-slate-800 text-white"}`}
+                      onClick={() => {
+                        setSelectedLeagues((prev) =>
+                          selected
+                            ? prev.filter((id) => id !== l.id)
+                            : [...prev, l.id]
+                        );
+                      }}
+                    >
+                      <Image
+                        src={l.image || "/league.svg"}
+                        alt={l.name}
+                        width={32}
+                        height={32}
+                        className="rounded-full object-contain bg-slate-600"
+                      />
+                      <span className="font-medium">{l.name}</span>
+                      {selected && (
+                        <span className="ml-auto text-green-400 font-bold">
+                          ✓
+                        </span>
+                      )}
+                    </li>
+                  );
+                })}
               </ul>
             </Card>
           </div>

@@ -1,6 +1,7 @@
 // Busca torneios de uma liga específica
 export const getTournamentsForLeague = async (leagueId: string, hl: string = "pt-BR") => {
   try {
+    console.log("LEAGUE ID ",leagueId)
     const params = new URLSearchParams({ hl, leagueId });
     const response = await lolesportsApiClient.get<{
       data: {
@@ -14,7 +15,7 @@ export const getTournamentsForLeague = async (leagueId: string, hl: string = "pt
           }>;
         }>; 
       };
-    }>(`/getLeagues?${params}`);
+    }>(`/getTournamentsForLeague?hl=${hl}&leagueId=${leagueId}`);
     console.log("TOURNAMENT ID ",response.data.data)
     const tournaments = response.data.data.leagues[0]?.tournaments || [];
     return tournaments;
@@ -271,19 +272,22 @@ export const getEventDetails = async (eventId: string): Promise<Match | null> =>
 export const getStandings = async (tournamentId: string, hl: string = "pt-BR"): Promise<Standing[]> => {
   try {
     const response = await lolesportsApiClient.get<any>(`/getStandings?hl=${hl}&tournamentId=${tournamentId}`);
-    const standings: Standing[] = [];
-    response.data.data.standings.stages.forEach((stage: any) => {
-      stage.sections.forEach((section: any) => {
-        standings.push(...section.rankings);
-      });
-    });
-    return standings;
+ 
+    return response.data.data;
   } catch (error) {
     console.error('Failed to fetch standings:', error);
     return [];
   }
 };
-
+export const getStandingsV3 = async (tournamentId: string, hl: string = "pt-BR"): Promise<Standing[]> => {
+  try {
+    const response = await lolesportsApiClient.get<any>(`/getStandingsV3?hl=${hl}&tournamentId=${tournamentId}`);
+    return response.data.data
+  } catch (error) {
+    console.error('Failed to fetch standings:', error);
+    return [];
+  }
+};
 // Get live game data
 export const getLiveGameData = async (gameId: string, startTime?: string): Promise<LiveGameData | null> => {
   try {

@@ -1,13 +1,13 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 
-import { NextIntlClientProvider, hasLocale } from 'next-intl';
-import { getMessages } from 'next-intl/server';
-import { notFound } from 'next/navigation';
-import { routing } from '@/i18n/routing';
-import { setRequestLocale } from 'next-intl/server';
-import Header from '@/components/Header';
-import Footer from '@/components/Footer';
+import { NextIntlClientProvider, hasLocale } from "next-intl";
+import { getMessages } from "next-intl/server";
+import { notFound } from "next/navigation";
+import { routing } from "@/i18n/routing";
+import { setRequestLocale } from "next-intl/server";
+import Header from "@/components/Header";
+import Footer from "@/components/Footer";
 import "../globals.css";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 
@@ -52,7 +52,9 @@ export default async function LocaleLayout({
 
   return (
     <html lang={locale}>
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased bg-gradient-to-br from-slate-900 via-slate-800 to-gray-900 border-t border-white/10  `}>
+      <body
+        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-gradient-to-br from-slate-900 via-slate-800 to-gray-900 border-t border-white/10 min-h-screen flex flex-col`}
+      >
         <NextIntlClientProvider messages={messages}>
           <Header />
           <svg
@@ -108,9 +110,11 @@ export default async function LocaleLayout({
               </radialGradient>
             </defs>
           </svg>
-          {children}
-             {/* Language Switcher */}
-      <LanguageSwitcher locale={locale} />
+          <div className="flex-1 flex flex-col">
+            {children}
+            {/* Language Switcher */}
+            <LanguageSwitcher locale={locale} />
+          </div>
           <Footer />
         </NextIntlClientProvider>
       </body>
