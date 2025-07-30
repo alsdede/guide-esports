@@ -85,42 +85,72 @@ export default function StandingsTableClient({ leagues }: Props) {
             ))}
           </TabsList>
           {stages.map((stage: any) => {
-            const groupSections = Array.isArray(stage.sections)
-              ? stage.sections.filter((section: any) => section.type === "group")
-              : [];
+            const sections = Array.isArray(stage.sections) ? stage.sections : [];
             return (
               <TabsContent key={stage.id} value={stage.id}>
-                {groupSections.length > 0 ? (
-                  groupSections.map((section: any) => (
+                {sections.length > 0 ? (
+                  sections.map((section: any) => (
                     <div key={section.id} className="mb-8">
                       <h2 className="text-xl font-bold text-white mb-2">{section.name}</h2>
-                      <Table className="bg-black/30 rounded-xl overflow-hidden">
-                        <TableHeader>
-                          <TableRow>
-                            <TableHead className="text-white">Posição</TableHead>
-                            <TableHead className="text-white">Time</TableHead>
-                            <TableHead className="text-white">Vitórias</TableHead>
-                            <TableHead className="text-white">Derrotas</TableHead>
-                          </TableRow>
-                        </TableHeader>
-                        <TableBody>
-                          {section.rankings
-                            .sort((a: any, b: any) => a.ordinal - b.ordinal)
-                            .map((ranking: any) =>
-                              ranking.teams.map((team: any) => (
-                                <TableRow key={team.id}>
-                                  <TableCell className="text-white">{ranking.ordinal}</TableCell>
-                                  <TableCell className="flex items-center gap-2 text-white">
-                                    <Image src={team.image} alt={team.name} width={32} height={32} className="rounded-full" />
-                                    <span className="font-bold">{team.name}</span>
-                                  </TableCell>
-                                  <TableCell className="text-white">{team.record.wins}</TableCell>
-                                  <TableCell className="text-white">{team.record.losses}</TableCell>
-                                </TableRow>
-                              ))
-                            )}
-                        </TableBody>
-                      </Table>
+                      {section.type === "group" ? (
+                        <Table className="bg-black/30 rounded-xl overflow-hidden">
+                          <TableHeader>
+                            <TableRow>
+                              <TableHead className="text-white">Posição</TableHead>
+                              <TableHead className="text-white">Time</TableHead>
+                              <TableHead className="text-white">Vitórias</TableHead>
+                              <TableHead className="text-white">Derrotas</TableHead>
+                            </TableRow>
+                          </TableHeader>
+                          <TableBody>
+                            {section.rankings
+                              .sort((a: any, b: any) => a.ordinal - b.ordinal)
+                              .map((ranking: any) =>
+                                ranking.teams.map((team: any) => (
+                                  <TableRow key={team.id}>
+                                    <TableCell className="text-white">{ranking.ordinal}</TableCell>
+                                    <TableCell className="flex items-center gap-2 text-white">
+                                      <Image src={team.image} alt={team.name} width={32} height={32} className="rounded-full" />
+                                      <span className="font-bold">{team.name}</span>
+                                    </TableCell>
+                                    <TableCell className="text-white">{team.record.wins}</TableCell>
+                                    <TableCell className="text-white">{team.record.losses}</TableCell>
+                                  </TableRow>
+                                ))
+                              )}
+                          </TableBody>
+                        </Table>
+                      ) : section.type === "bracket" ? (
+                        <div className="flex flex-wrap gap-6">
+                          {section.columns.map((column: any, colIdx: number) => (
+                            <div key={colIdx} className="bg-black/20 rounded-lg p-4 min-w-[220px]">
+                              {column.cells.map((cell: any, cellIdx: number) => (
+                                <div key={cellIdx} className="mb-4">
+                                  <h3 className="text-white font-bold mb-2 text-base">{cell.name}</h3>
+                                  {cell.matches.map((match: any) => (
+                                    <div key={match.id} className="flex flex-col gap-2 mb-2 p-2 rounded-lg border border-slate-700 bg-slate-900/60">
+                                      <div className="flex items-center justify-between gap-2">
+                                        {match.teams.map((team: any, idx: number) => (
+                                          <div key={team.id + idx} className="flex items-center gap-2 w-1/2">
+                                            <Image src={team.image} alt={team.name} width={28} height={28} className="rounded-full" />
+                                            <span className={`text-white font-bold ${team.result?.outcome === "win" ? "text-green-400" : team.result?.outcome === "loss" ? "text-red-400" : ""}`}>{team.name}</span>
+                                            {typeof team.result?.gameWins === "number" && (
+                                              <span className="ml-2 text-xs text-white/80">{team.result.gameWins}</span>
+                                            )}
+                                          </div>
+                                        ))}
+                                      </div>
+                                      {match.state === "completed" && (
+                                        <div className="text-xs text-white/70 mt-1">Finalizado</div>
+                                      )}
+                                    </div>
+                                  ))}
+                                </div>
+                              ))}
+                            </div>
+                          ))}
+                        </div>
+                      ) : null}
                     </div>
                   ))
                 ) : (
@@ -134,44 +164,74 @@ export default function StandingsTableClient({ leagues }: Props) {
     }
     // Só um stage
     const stage = stages[0];
-    const groupSections = Array.isArray(stage.sections)
-      ? stage.sections.filter((section: any) => section.type === "group")
-      : [];
-    if (groupSections.length === 0) {
+    const sections = Array.isArray(stage.sections) ? stage.sections : [];
+    if (sections.length === 0) {
       return <div className="text-white text-center py-8">Nenhuma seção encontrada.</div>;
     }
     return (
       <div>
-        {groupSections.map((section: any) => (
+        {sections.map((section: any) => (
           <div key={section.id} className="mb-8">
             <h2 className="text-xl font-bold text-white mb-2">{section.name}</h2>
-            <Table className="bg-black/30 rounded-xl overflow-hidden">
-              <TableHeader>
-                <TableRow>
-                  <TableHead className="text-white">Posição</TableHead>
-                  <TableHead className="text-white">Time</TableHead>
-                  <TableHead className="text-white">Vitórias</TableHead>
-                  <TableHead className="text-white">Derrotas</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {section.rankings
-                  .sort((a: any, b: any) => a.ordinal - b.ordinal)
-                  .map((ranking: any) =>
-                    ranking.teams.map((team: any) => (
-                      <TableRow key={team.id}>
-                        <TableCell className="text-white">{ranking.ordinal}</TableCell>
-                        <TableCell className="flex items-center gap-2 text-white">
-                          <Image src={team.image} alt={team.name} width={32} height={32} className="rounded-full" />
-                          <span className="font-bold">{team.name}</span>
-                        </TableCell>
-                        <TableCell className="text-white">{team.record.wins}</TableCell>
-                        <TableCell className="text-white">{team.record.losses}</TableCell>
-                      </TableRow>
-                    ))
-                  )}
-              </TableBody>
-            </Table>
+            {section.type === "group" ? (
+              <Table className="bg-black/30 rounded-xl overflow-hidden">
+                <TableHeader>
+                  <TableRow>
+                    <TableHead className="text-white">Posição</TableHead>
+                    <TableHead className="text-white">Time</TableHead>
+                    <TableHead className="text-white">Vitórias</TableHead>
+                    <TableHead className="text-white">Derrotas</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {section.rankings
+                    .sort((a: any, b: any) => a.ordinal - b.ordinal)
+                    .map((ranking: any) =>
+                      ranking.teams.map((team: any) => (
+                        <TableRow key={team.id}>
+                          <TableCell className="text-white">{ranking.ordinal}</TableCell>
+                          <TableCell className="flex items-center gap-2 text-white">
+                            <Image src={team.image} alt={team.name} width={32} height={32} className="rounded-full" />
+                            <span className="font-bold">{team.name}</span>
+                          </TableCell>
+                          <TableCell className="text-white">{team.record.wins}</TableCell>
+                          <TableCell className="text-white">{team.record.losses}</TableCell>
+                        </TableRow>
+                      ))
+                    )}
+                </TableBody>
+              </Table>
+            ) : section.type === "bracket" ? (
+              <div className="flex flex-wrap gap-6">
+                {section.columns.map((column: any, colIdx: number) => (
+                  <div key={colIdx} className="bg-black/20 rounded-lg p-4 min-w-[220px]">
+                    {column.cells.map((cell: any, cellIdx: number) => (
+                      <div key={cellIdx} className="mb-4">
+                        <h3 className="text-white font-bold mb-2 text-base">{cell.name}</h3>
+                        {cell.matches.map((match: any) => (
+                          <div key={match.id} className="flex flex-col gap-2 mb-2 p-2 rounded-lg border border-slate-700 bg-slate-900/60">
+                            <div className="flex items-center justify-between gap-2">
+                              {match.teams.map((team: any, idx: number) => (
+                                <div key={team.id + idx} className="flex items-center gap-2 w-1/2">
+                                  <Image src={team.image} alt={team.name} width={28} height={28} className="rounded-full" />
+                                  <span className={`text-white font-bold ${team.result?.outcome === "win" ? "text-green-400" : team.result?.outcome === "loss" ? "text-red-400" : ""}`}>{team.name}</span>
+                                  {typeof team.result?.gameWins === "number" && (
+                                    <span className="ml-2 text-xs text-white/80">{team.result.gameWins}</span>
+                                  )}
+                                </div>
+                              ))}
+                            </div>
+                            {match.state === "completed" && (
+                              <div className="text-xs text-white/70 mt-1">Finalizado</div>
+                            )}
+                          </div>
+                        ))}
+                      </div>
+                    ))}
+                  </div>
+                ))}
+              </div>
+            ) : null}
           </div>
         ))}
       </div>
