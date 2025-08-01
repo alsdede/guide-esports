@@ -2,10 +2,19 @@
 
 import { useState, useEffect } from "react";
 import Image from "next/image";
-import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from "@/components/ui/table";
+import {
+  Table,
+  TableHeader,
+  TableRow,
+  TableHead,
+  TableBody,
+  TableCell,
+} from "@/components/ui/table";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import { getStandingsV3, getTournamentsForLeague } from "@/services/lol-esports.service";
-
+import {
+  getStandingsV3,
+  getTournamentsForLeague,
+} from "@/services/lol-esports.service";
 
 interface Tournament {
   id: string;
@@ -40,9 +49,9 @@ export default function StandingsTableClient({ leagues }: Props) {
       setSelectedTournament("");
       return;
     }
-    console.log("select league aqui",selectedLeague)
+    console.log("select league aqui", selectedLeague);
     getTournamentsForLeague(selectedLeague, "pt-BR").then((tournaments) => {
-         console.log("DATA tournmanet",tournaments)
+      console.log("DATA tournmanet", tournaments);
       setTournaments(tournaments);
       setSelectedTournament(tournaments[0]?.id || "");
     });
@@ -56,50 +65,74 @@ export default function StandingsTableClient({ leagues }: Props) {
     }
     setLoading(true);
     getStandingsV3(selectedTournament).then((data) => {
-        console.log("DATA STANDING",data)
+      console.log("DATA STANDING", data);
       setStandings(data);
       setLoading(false);
     });
   }, [selectedTournament]);
-    console.log("selectedTournament",selectedTournament)
-        console.log("standings",standings)
-        console.log("tournaments",tournaments)
+ 
   // Renderização dinâmica dos standings
   const renderStandings = () => {
-    if (!standings || !standings.standings || standings.standings.length === 0) {
-      return <div className="text-white text-center py-8">Nenhum dado encontrado.</div>;
+    if (
+      !standings ||
+      !standings.standings ||
+      standings.standings.length === 0
+    ) {
+      return (
+        <div className="text-white text-center py-8">
+          Nenhum dado encontrado.
+        </div>
+      );
     }
     // Corrigido: acessar stages corretamente
     const stages = standings.standings[0].stages || [];
     if (!Array.isArray(stages) || stages.length === 0) {
-      return <div className="text-white text-center py-8">Nenhuma seção encontrada.</div>;
+      return (
+        <div className="text-white text-center py-8">
+          Nenhuma seção encontrada.
+        </div>
+      );
     }
     if (stages.length > 1) {
       return (
         <Tabs defaultValue={stages[0]?.id} className="w-full">
           <TabsList className="mb-4">
             {stages.map((stage: any) => (
-              <TabsTrigger key={stage.id} value={stage.id} className="capitalize">
+              <TabsTrigger
+                key={stage.id}
+                value={stage.id}
+                className="capitalize"
+              >
                 {stage.name}
               </TabsTrigger>
             ))}
           </TabsList>
           {stages.map((stage: any) => {
-            const sections = Array.isArray(stage.sections) ? stage.sections : [];
+            const sections = Array.isArray(stage.sections)
+              ? stage.sections
+              : [];
             return (
               <TabsContent key={stage.id} value={stage.id}>
                 {sections.length > 0 ? (
                   sections.map((section: any) => (
                     <div key={section.id} className="mb-8">
-                      <h2 className="text-xl font-bold text-white mb-2">{section.name}</h2>
+                      <h2 className="text-xl font-bold text-white mb-2">
+                        {section.name}
+                      </h2>
                       {section.type === "group" ? (
                         <Table className="bg-black/30 rounded-xl overflow-hidden">
                           <TableHeader>
                             <TableRow>
-                              <TableHead className="text-white">Posição</TableHead>
+                              <TableHead className="text-white">
+                                Posição
+                              </TableHead>
                               <TableHead className="text-white">Time</TableHead>
-                              <TableHead className="text-white">Vitórias</TableHead>
-                              <TableHead className="text-white">Derrotas</TableHead>
+                              <TableHead className="text-white">
+                                Vitórias
+                              </TableHead>
+                              <TableHead className="text-white">
+                                Derrotas
+                              </TableHead>
                             </TableRow>
                           </TableHeader>
                           <TableBody>
@@ -108,13 +141,27 @@ export default function StandingsTableClient({ leagues }: Props) {
                               .map((ranking: any) =>
                                 ranking.teams.map((team: any) => (
                                   <TableRow key={team.id}>
-                                    <TableCell className="text-white">{ranking.ordinal}</TableCell>
-                                    <TableCell className="flex items-center gap-2 text-white">
-                                      <Image src={team.image} alt={team.name} width={32} height={32} className="rounded-full" />
-                                      <span className="font-bold">{team.name}</span>
+                                    <TableCell className="text-white">
+                                      {ranking.ordinal}
                                     </TableCell>
-                                    <TableCell className="text-white">{team.record.wins}</TableCell>
-                                    <TableCell className="text-white">{team.record.losses}</TableCell>
+                                    <TableCell className="flex items-center gap-2 text-white">
+                                      <Image
+                                        src={team.image}
+                                        alt={team.name}
+                                        width={32}
+                                        height={32}
+                                        className="rounded-full"
+                                      />
+                                      <span className="font-bold">
+                                        {team.name}
+                                      </span>
+                                    </TableCell>
+                                    <TableCell className="text-white">
+                                      {team.record.wins}
+                                    </TableCell>
+                                    <TableCell className="text-white">
+                                      {team.record.losses}
+                                    </TableCell>
                                   </TableRow>
                                 ))
                               )}
@@ -122,39 +169,73 @@ export default function StandingsTableClient({ leagues }: Props) {
                         </Table>
                       ) : section.type === "bracket" ? (
                         <div className="flex flex-wrap gap-6">
-                          {section.columns.map((column: any, colIdx: number) => (
-                            <div key={colIdx} className="bg-black/20 rounded-lg p-4 min-w-[220px]">
-                              {column.cells.map((cell: any, cellIdx: number) => (
-                                <div key={cellIdx} className="mb-4">
-                                  <h3 className="text-white font-bold mb-2 text-base">{cell.name}</h3>
-                                  {cell.matches.map((match: any) => (
-                                    <div key={match.id} className="flex flex-col gap-2 mb-2 p-2 rounded-lg border border-slate-700 bg-slate-900/60">
-                                      <div className="flex items-center justify-between gap-2">
-                                        {match.teams.map((team: any, idx: number) => (
-                                          <div key={team.id + idx} className="flex items-center gap-2 w-1/2">
-                                            <Image src={team.image} alt={team.name} width={28} height={28} className="rounded-full" />
-                                            <span className={`text-white font-bold ${team.result?.outcome === "win" ? "text-green-400" : team.result?.outcome === "loss" ? "text-red-400" : ""}`}>{team.name}</span>
-                                            {typeof team.result?.gameWins === "number" && (
-                                              <span className="ml-2 text-xs text-white/80">{team.result.gameWins}</span>
+                          {section.columns.map(
+                            (column: any, colIdx: number) => (
+                              <div
+                                key={colIdx}
+                                className="bg-black/20 rounded-lg p-4 min-w-[220px]"
+                              >
+                                {column.cells.map(
+                                  (cell: any, cellIdx: number) => (
+                                    <div key={cellIdx} className="mb-4">
+                                      <h3 className="text-white font-bold mb-2 text-base">
+                                        {cell.name}
+                                      </h3>
+                                      {cell.matches.map((match: any) => (
+                                        <div
+                                          key={match.id}
+                                          className="flex flex-col gap-2 mb-2 p-2 rounded-lg border border-slate-700 bg-slate-900/60"
+                                        >
+                                          <div className="flex items-center justify-between gap-2">
+                                            {match.teams.map(
+                                              (team: any, idx: number) => (
+                                                <div
+                                                  key={team.id + idx}
+                                                  className="flex items-center gap-2 w-1/2"
+                                                >
+                                                  <Image
+                                                    src={team.image}
+                                                    alt={team.name}
+                                                    width={28}
+                                                    height={28}
+                                                    className="rounded-full"
+                                                  />
+                                                  <span
+                                                    className={`text-white font-bold ${team.result?.outcome === "win" ? "text-green-400" : team.result?.outcome === "loss" ? "text-red-400" : ""}`}
+                                                  >
+                                                    {team.name}
+                                                  </span>
+                                                  {typeof team.result
+                                                    ?.gameWins === "number" && (
+                                                    <span className="ml-2 text-xs text-white/80">
+                                                      {team.result.gameWins}
+                                                    </span>
+                                                  )}
+                                                </div>
+                                              )
                                             )}
                                           </div>
-                                        ))}
-                                      </div>
-                                      {match.state === "completed" && (
-                                        <div className="text-xs text-white/70 mt-1">Finalizado</div>
-                                      )}
+                                          {match.state === "completed" && (
+                                            <div className="text-xs text-white/70 mt-1">
+                                              Finalizado
+                                            </div>
+                                          )}
+                                        </div>
+                                      ))}
                                     </div>
-                                  ))}
-                                </div>
-                              ))}
-                            </div>
-                          ))}
+                                  )
+                                )}
+                              </div>
+                            )
+                          )}
                         </div>
                       ) : null}
                     </div>
                   ))
                 ) : (
-                  <div className="text-white text-center py-8">Nenhuma seção encontrada.</div>
+                  <div className="text-white text-center py-8">
+                    Nenhuma seção encontrada.
+                  </div>
                 )}
               </TabsContent>
             );
@@ -166,13 +247,19 @@ export default function StandingsTableClient({ leagues }: Props) {
     const stage = stages[0];
     const sections = Array.isArray(stage.sections) ? stage.sections : [];
     if (sections.length === 0) {
-      return <div className="text-white text-center py-8">Nenhuma seção encontrada.</div>;
+      return (
+        <div className="text-white text-center py-8">
+          Nenhuma seção encontrada.
+        </div>
+      );
     }
     return (
       <div>
         {sections.map((section: any) => (
           <div key={section.id} className="mb-8">
-            <h2 className="text-xl font-bold text-white mb-2">{section.name}</h2>
+            <h2 className="text-xl font-bold text-white mb-2">
+              {section.name}
+            </h2>
             {section.type === "group" ? (
               <Table className="bg-black/30 rounded-xl overflow-hidden">
                 <TableHeader>
@@ -189,13 +276,25 @@ export default function StandingsTableClient({ leagues }: Props) {
                     .map((ranking: any) =>
                       ranking.teams.map((team: any) => (
                         <TableRow key={team.id}>
-                          <TableCell className="text-white">{ranking.ordinal}</TableCell>
+                          <TableCell className="text-white">
+                            {ranking.ordinal}
+                          </TableCell>
                           <TableCell className="flex items-center gap-2 text-white">
-                            <Image src={team.image} alt={team.name} width={32} height={32} className="rounded-full" />
+                            <Image
+                              src={team.image}
+                              alt={team.name}
+                              width={32}
+                              height={32}
+                              className="rounded-full"
+                            />
                             <span className="font-bold">{team.name}</span>
                           </TableCell>
-                          <TableCell className="text-white">{team.record.wins}</TableCell>
-                          <TableCell className="text-white">{team.record.losses}</TableCell>
+                          <TableCell className="text-white">
+                            {team.record.wins}
+                          </TableCell>
+                          <TableCell className="text-white">
+                            {team.record.losses}
+                          </TableCell>
                         </TableRow>
                       ))
                     )}
@@ -204,25 +303,51 @@ export default function StandingsTableClient({ leagues }: Props) {
             ) : section.type === "bracket" ? (
               <div className="flex flex-wrap gap-6">
                 {section.columns.map((column: any, colIdx: number) => (
-                  <div key={colIdx} className="bg-black/20 rounded-lg p-4 min-w-[220px]">
+                  <div
+                    key={colIdx}
+                    className="bg-black/20 rounded-lg p-4 min-w-[220px]"
+                  >
                     {column.cells.map((cell: any, cellIdx: number) => (
                       <div key={cellIdx} className="mb-4">
-                        <h3 className="text-white font-bold mb-2 text-base">{cell.name}</h3>
+                        <h3 className="text-white font-bold mb-2 text-base">
+                          {cell.name}
+                        </h3>
                         {cell.matches.map((match: any) => (
-                          <div key={match.id} className="flex flex-col gap-2 mb-2 p-2 rounded-lg border border-slate-700 bg-slate-900/60">
+                          <div
+                            key={match.id}
+                            className="flex flex-col gap-2 mb-2 p-2 rounded-lg border border-slate-700 bg-slate-900/60"
+                          >
                             <div className="flex items-center justify-between gap-2">
                               {match.teams.map((team: any, idx: number) => (
-                                <div key={team.id + idx} className="flex items-center gap-2 w-1/2">
-                                  <Image src={team.image} alt={team.name} width={28} height={28} className="rounded-full" />
-                                  <span className={`text-white font-bold ${team.result?.outcome === "win" ? "text-green-400" : team.result?.outcome === "loss" ? "text-red-400" : ""}`}>{team.name}</span>
-                                  {typeof team.result?.gameWins === "number" && (
-                                    <span className="ml-2 text-xs text-white/80">{team.result.gameWins}</span>
+                                <div
+                                  key={team.id + idx}
+                                  className="flex items-center gap-2 w-1/2"
+                                >
+                                  <Image
+                                    src={team.image}
+                                    alt={team.name}
+                                    width={28}
+                                    height={28}
+                                    className="rounded-full"
+                                  />
+                                  <span
+                                    className={`text-white font-bold ${team.result?.outcome === "win" ? "text-green-400" : team.result?.outcome === "loss" ? "text-red-400" : ""}`}
+                                  >
+                                    {team.name}
+                                  </span>
+                                  {typeof team.result?.gameWins ===
+                                    "number" && (
+                                    <span className="ml-2 text-xs text-white/80">
+                                      {team.result.gameWins}
+                                    </span>
                                   )}
                                 </div>
                               ))}
                             </div>
                             {match.state === "completed" && (
-                              <div className="text-xs text-white/70 mt-1">Finalizado</div>
+                              <div className="text-xs text-white/70 mt-1">
+                                Finalizado
+                              </div>
                             )}
                           </div>
                         ))}
@@ -242,7 +367,9 @@ export default function StandingsTableClient({ leagues }: Props) {
     <div className="flex flex-col md:flex-row gap-8 w-full">
       <div className="w-full md:w-64 shrink-0">
         <div className="bg-slate-900 border-slate-700 rounded-xl p-4 mb-4 md:mb-0">
-          <h2 className="text-white text-lg font-bold mb-2">Selecione a liga</h2>
+          <h2 className="text-white text-lg font-bold mb-2">
+            Selecione a liga
+          </h2>
           <ul className="h-full">
             {leagues.map((l) => {
               const selected = selectedLeague === l.id;
@@ -271,7 +398,9 @@ export default function StandingsTableClient({ leagues }: Props) {
       </div>
       <div className="flex-1 min-w-0">
         {loading ? (
-          <div className="text-white text-center py-8">Carregando classificação...</div>
+          <div className="text-white text-center py-8">
+            Carregando classificação...
+          </div>
         ) : (
           renderStandings()
         )}

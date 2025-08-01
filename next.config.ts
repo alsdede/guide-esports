@@ -29,6 +29,11 @@ const nextConfig: NextConfig = {
         hostname: 'static.lolesports.com',
         pathname: '/**',
       },
+        {
+        protocol: 'https',
+        hostname: 'lolstatic-a.akamaihd.net',
+        pathname: '/**',
+      },
     ],
   },
   /* config options here */

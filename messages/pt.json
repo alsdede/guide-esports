@@ -23,14 +23,14 @@
     "live": "Ao Vivo",
     "tournaments": "Torneios",
     "schedule": "Agenda",
-        "standings": "Classificação",
+    "standings": "Classificação",
     "bettingHouses": "Casas de Apostas",
     "contact": "Contato",
     "stats": "Estatísticas",
     "account": "Conta",
     "login": "Entrar",
     "register": "Cadastrar",
-    "bePartner":"Seja Parceiro"
+    "bePartner": "Seja Parceiro"
   },
   "Footer": {
     "aboutUs": "Sobre Nós",

@@ -29,6 +29,7 @@
     "account": "Account",
     "login": "Login",
     "register": "Register",
+    "contact":"Contact",
     "bePartner": "Be a Partner"
   },
   "Footer": {
