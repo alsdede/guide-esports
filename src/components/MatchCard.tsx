@@ -1,12 +1,25 @@
 import Image from 'next/image';
 import { formatMatchDate, getMatchStatusDisplay, type ScheduleEvent } from '@/services/lol-schedule.service';
+import { Link } from '@/i18n/navigation';
+import { useMatchStore } from '@/stores/matchStore';
 
 export function MatchCard({ match, locale }: { match: ScheduleEvent; locale: string }) {
+  const setCurrentMatch = useMatchStore((state) => state.setCurrentMatch);
   const status = getMatchStatusDisplay(match.state, match.startTime);
   const formattedDate = formatMatchDate(match.startTime, locale === 'pt' ? 'pt-BR' : 'en-US');
   const matchData = match.match;
+  
+  // Verificar se a partida está ao vivo ou finalizada para permitir o link
+  const isClickable = match.state === 'inProgress' || match.state === 'completed';
+  const matchId = match.match?.id || 'unknown';
 
-  return (
+  const handleMatchClick = () => {
+    if (isClickable) {
+      setCurrentMatch(match);
+    }
+  };
+
+  const MatchContent = () => (
     <div className="bg-black/30 backdrop-blur-sm rounded-lg p-4 border border-white/10 hover:border-slate-600/50 transition-all">
       {/* Header */}
       <div className="flex items-center justify-between mb-4">
@@ -76,6 +89,28 @@ export function MatchCard({ match, locale }: { match: ScheduleEvent; locale: str
           {formattedDate}
         </p>
       </div>
+      {/* Live Indicator */}
+      {isClickable && (
+        <div className="mt-2 text-center">
+          <span className="text-xs text-green-400 font-medium">
+            {match.state === 'inProgress' ? '🔴 Clique para assistir' : '📺 Ver detalhes'}
+          </span>
+        </div>
+      )}
     </div>
   );
+
+  if (isClickable) {
+    return (
+      <Link 
+        href={`/live/${matchId}`} 
+        className="block hover:scale-105 transition-transform"
+        onClick={handleMatchClick}
+      >
+        <MatchContent />
+      </Link>
+    );
+  }
+
+  return <MatchContent />;
 }
