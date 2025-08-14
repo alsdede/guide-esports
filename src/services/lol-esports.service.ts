@@ -111,6 +111,45 @@ export interface Game {
   }[];
 }
 
+export interface EventDetails {
+  id: string;
+  type: string;
+  tournament: {
+    id: string;
+  };
+  league: {
+    id: string;
+    slug: string;
+    image: string;
+    name: string;
+  };
+  match: {
+    strategy: {
+      count: number;
+    };
+    teams: {
+      id: string;
+      name: string;
+      code: string;
+      image: string;
+      result: {
+        gameWins: number;
+      };
+    }[];
+    games: {
+      number: number;
+      id: string;
+      state: 'unstarted' | 'inProgress' | 'completed';
+      teams: {
+        id: string;
+        side: 'blue' | 'red';
+      }[];
+      vods: unknown[];
+    }[];
+  };
+  streams: unknown[];
+}
+
 export interface Stream {
   mediaLocale: {
     locale: string;
@@ -253,11 +292,11 @@ export const getTodayMatches = async (): Promise<Match[]> => {
 };
 
 // Get event details
-export const getEventDetails = async (eventId: string): Promise<Match | null> => {
+export const getEventDetails = async (eventId: string): Promise<EventDetails | null> => {
   try {
     const response = await lolesportsApiClient.get<{
       data: {
-        event: Match;
+        event: EventDetails;
       };
     }>(`/getEventDetails?hl=pt-BR&id=${eventId}`);
 
@@ -291,16 +330,34 @@ export const getStandingsV3 = async (tournamentId: string, hl: string = "pt-BR")
 // Get live game data
 export const getLiveGameData = async (gameId: string, startTime?: string): Promise<LiveGameData | null> => {
   try {
-    const params = new URLSearchParams();
-    if (startTime) {
-      params.append('startingTime', startTime);
+    // Se não foi fornecido startTime, calcular o tempo "redondo" com delay de 30 segundos
+    if (!startTime) {
+      const now = new Date();
+      // Subtrair 30 segundos para evitar erro de "too close to current time"
+      now.setSeconds(now.getSeconds() - 30);
+      
+      // Arredondar para múltiplo de 10 segundos (00, 10, 20, 30, 40, 50)
+      const roundedSeconds = Math.floor(now.getSeconds() / 10) * 10;
+      const roundedTime = new Date(now);
+      roundedTime.setSeconds(roundedSeconds, 0); // Zerar os milissegundos também
+      startTime = roundedTime.toISOString();
     }
 
-    const response = await feedClient.get<LiveGameData>(
-      `/details/${gameId}?${params}`
-    );
-
-    return response.data;
+    const url = `https://feed.lolesports.com/livestats/v1/details/${gameId}?startingTime=${startTime}`;
+    
+    console.log(`Fetching live game data from: ${url}`);
+    console.log(`Using startTime: ${startTime}`);
+    
+    const response = await fetch(url);
+    
+    // if (!response.ok) {
+    //   throw new Error(`HTTP error! status: ${response.status}`);
+    // }
+     
+    const data = await response.json();
+    console.log("Live game data response:", data);
+    
+    return data;
   } catch (error) {
     console.error('Failed to fetch live game data:', error);
     return null;

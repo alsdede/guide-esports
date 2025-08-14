@@ -92,7 +92,7 @@ export default function TransfersSection() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [dataSource, setDataSource] = useState<string>('');
-
+  console.log(transfersData.length)
   useEffect(() => {
     const fetchTransfers = async () => {
       try {
@@ -193,7 +193,7 @@ export default function TransfersSection() {
   }
 
   return (
-    <div className="flex flex-col gap-8 items-center justify-center rounded-lg bg-purple-200/[0.06] border border-black/10 py-8">
+    <div className="flex flex-col gap-8 items-center justify-center rounded-lg bg-purple-200/[0.06] border border-black/10 py-8 ">
       <div className="flex flex-col items-center gap-2">
         <span className="font-black text-sm text-gray-200 uppercase">Roster Changes</span>
         {error && (
@@ -211,54 +211,58 @@ export default function TransfersSection() {
         )} */}
       </div>
       
-      {transfersData
-        .filter(day => day.transfers.length > 0) // Só mostrar dias com transferências
-        .map((day, dayIndex) => (
-        <div key={dayIndex} className="flex flex-col gap-4 w-full">
-          <span className="font-black text-xs text-white uppercase px-5">
-            {day.date}
-          </span>
-          
-          {day.transfers.map((transfer, transferIndex) => (
-            <div 
-              key={transferIndex}
-              className="flex items-center text-xs justify-between w-full hover:bg-gray-800/50 px-8 py-[6px] rounded duration-200 cursor-pointer"
-              title={transfer.description}
-            >
-              <div className="flex items-center gap-3">
-                <TransferBadge type={transfer.type} />
-                
-                <span className="font-black flex items-center gap-4 text-gray-200 uppercase">
-                  <PlayerIcon />
-                  {transfer.playerName}
-                </span>
-              </div>
+      <div className="w-full max-h-[280px] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-600 scrollbar-track-gray-800">
+        <div className="flex flex-col gap-8">
+          {transfersData
+            .filter(day => day.transfers.length > 0) // Só mostrar dias com transferências
+            .map((day, dayIndex) => (
+            <div key={dayIndex} className="flex flex-col gap-4 w-full">
+              <span className="font-black text-xs text-white uppercase px-5">
+                {day.date}
+              </span>
               
-              <div className="flex items-center gap-2">
-                <span className="font-black text-gray-200 uppercase">
-                  {transfer.teamCode}
-                </span>
-                
-                <div className="w-[22px] h-[22px] bg-gray-700 rounded flex items-center justify-center overflow-hidden">
-                  {transfer.teamLogo ? (
-                    <Image
-                      src={transfer.teamLogo}
-                      alt={transfer.teamName}
-                      width={22}
-                      height={22}
-                      className="w-full h-full object-contain"
-                    />
-                  ) : (
-                    <div className={`w-full h-full flex items-center justify-center text-xs font-bold text-white ${getRegionColor(transfer.region)}`}>
-                      {transfer.teamCode.charAt(0)}
+              {day.transfers.map((transfer, transferIndex) => (
+                <div 
+                  key={transferIndex}
+                  className="flex items-center text-xs justify-between w-full hover:bg-gray-800/50 px-8 py-[6px] rounded duration-200 cursor-pointer"
+                  title={transfer.description}
+                >
+                  <div className="flex items-center gap-3">
+                    <TransferBadge type={transfer.type} />
+                    
+                    <span className="font-black flex items-center gap-4 text-gray-200 uppercase">
+                      <PlayerIcon />
+                      {transfer.playerName}
+                    </span>
+                  </div>
+                  
+                  <div className="flex items-center gap-2">
+                    <span className="font-black text-gray-200 uppercase">
+                      {transfer.teamCode}
+                    </span>
+                    
+                    <div className="w-[22px] h-[22px] bg-gray-700 rounded flex items-center justify-center overflow-hidden">
+                      {transfer.teamLogo ? (
+                        <Image
+                          src={transfer.teamLogo}
+                          alt={transfer.teamName}
+                          width={22}
+                          height={22}
+                          className="w-full h-full object-contain"
+                        />
+                      ) : (
+                        <div className={`w-full h-full flex items-center justify-center text-xs font-bold text-white ${getRegionColor(transfer.region)}`}>
+                          {transfer.teamCode.charAt(0)}
+                        </div>
+                      )}
                     </div>
-                  )}
+                  </div>
                 </div>
-              </div>
+              ))}
             </div>
           ))}
         </div>
-      ))}
+      </div>
       
       {transfersData.filter(day => day.transfers.length > 0).length === 0 && !loading && (
         <div className="py-8 text-center">
