@@ -50,8 +50,11 @@ export default async function LocaleLayout({
   // Providing all messages to the client side is the easiest way to get started
   const messages = await getMessages();
 
+  // Normalize locale for HTML lang attribute to prevent hydration mismatch
+  const normalizedLocale = locale === 'pt' ? 'pt' : locale === 'en' ? 'en' : 'pt';
+
   return (
-    <html lang={locale}>
+    <html lang={normalizedLocale} suppressHydrationWarning>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased bg-gradient-to-br from-slate-900 via-slate-800 to-gray-900 border-t border-white/10 min-h-screen flex flex-col`}
       >

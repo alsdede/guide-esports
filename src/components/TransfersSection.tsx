@@ -2,6 +2,7 @@
 
 import Image from 'next/image';
 import { useEffect, useState } from 'react';
+import { useParams } from 'next/navigation';
 import { getCachedTransfers, type Transfer, type TransferDay } from '@/services/transfers.service';
 
 // Componente para o ícone do jogador baseado na role
@@ -28,32 +29,54 @@ const PlayerIcon = () => {
 
 // Componente para o badge do tipo de transferência
 const TransferBadge = ({ type }: { type: Transfer['type'] }) => {
+  const params = useParams();
+  const locale = params?.locale as string || 'pt';
+
   const getBadgeConfig = (transferType: Transfer['type']) => {
+    const translations = {
+      pt: {
+        Join: 'ENTROU',
+        Leave: 'SAIU',
+        Renew: 'RENOVOU',
+        Inactive: 'INATIVO',
+        Removed: 'REMOVIDO'
+      },
+      en: {
+        Join: 'JOIN',
+        Leave: 'LEAVE',
+        Renew: 'RENEW',
+        Inactive: 'INACTIVE',
+        Removed: 'REMOVED'
+      }
+    };
+
+    const currentLang = locale.startsWith('pt') ? 'pt' : 'en';
+    
     switch (transferType) {
       case 'Join':
         return {
           bg: 'bg-[#2662d9]',
-          text: 'JOIN'
+          text: translations[currentLang].Join
         };
       case 'Leave':
         return {
           bg: 'bg-[#e23670]',
-          text: 'LEAVE'
+          text: translations[currentLang].Leave
         };
       case 'Renew':
         return {
           bg: 'bg-[#8b5cf6]',
-          text: 'RENEW'
+          text: translations[currentLang].Renew
         };
       case 'Inactive':
         return {
           bg: 'bg-[#6b7280]',
-          text: 'INACTIVE'
+          text: translations[currentLang].Inactive
         };
       case 'Removed':
         return {
           bg: 'bg-[#dc2626]',
-          text: 'REMOVED'
+          text: translations[currentLang].Removed
         };
     }
   };
@@ -88,10 +111,29 @@ const getRegionColor = (region: string) => {
 };
 
 export default function TransfersSection() {
+  const params = useParams();
+  const locale = params?.locale as string || 'pt';
   const [transfersData, setTransfersData] = useState<TransferDay[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [dataSource, setDataSource] = useState<string>('');
+
+  // Traduções para as strings da interface
+  const t = {
+    pt: {
+      rosterChanges: 'MUDANÇAS DE ROSTER',
+      loading: 'Carregando transferências...',
+      cacheData: 'Dados de cache',
+      noTransfers: 'Nenhuma transferência encontrada'
+    },
+    en: {
+      rosterChanges: 'ROSTER CHANGES',
+      loading: 'Loading transfers...',
+      cacheData: 'Cache data',
+      noTransfers: 'No transfers found'
+    }
+  };
+
+  const currentLang = locale.startsWith('pt') ? 'pt' : 'en';
   console.log(transfersData.length)
   useEffect(() => {
     const fetchTransfers = async () => {
@@ -105,19 +147,16 @@ export default function TransfersSection() {
         
         if (response.success) {
           setTransfersData(response.data);
-          setDataSource(response.source || 'unknown');
         } else {
           setError(response.error || 'Erro ao carregar transferências');
           // Usar dados de fallback em caso de erro
           setTransfersData(getFallbackData());
-          setDataSource('fallback');
         }
       } catch (err) {
         console.error('Erro ao buscar transferências:', err);
         setError('Erro ao carregar transferências');
         // Usar dados de fallback em caso de erro
         setTransfersData(getFallbackData());
-        setDataSource('fallback');
       } finally {
         setLoading(false);
       }
@@ -183,10 +222,10 @@ export default function TransfersSection() {
   if (loading) {
     return (
       <div className="flex flex-col gap-8 items-center justify-center rounded-lg bg-purple-200/[0.06] border border-black/10 py-8">
-        <span className="font-black text-sm text-gray-200 uppercase">Roster Changes</span>
+        <span className="font-black text-sm text-gray-200 uppercase">{t[currentLang].rosterChanges}</span>
         <div className="flex items-center justify-center py-8">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-white"></div>
-          <span className="ml-3 text-gray-300">Carregando transferências...</span>
+          <span className="ml-3 text-gray-300">{t[currentLang].loading}</span>
         </div>
       </div>
     );
@@ -195,10 +234,10 @@ export default function TransfersSection() {
   return (
     <div className="flex flex-col gap-8 items-center justify-center rounded-lg bg-purple-200/[0.06] border border-black/10 py-8 ">
       <div className="flex flex-col items-center gap-2">
-        <span className="font-black text-sm text-gray-200 uppercase">Roster Changes</span>
+        <span className="font-black text-sm text-gray-200 uppercase">{t[currentLang].rosterChanges}</span>
         {error && (
           <span className="text-xs text-yellow-400">
-            Dados de cache • {error}
+            {t[currentLang].cacheData} • {error}
           </span>
         )}
         {/* {dataSource && (
@@ -266,7 +305,7 @@ export default function TransfersSection() {
       
       {transfersData.filter(day => day.transfers.length > 0).length === 0 && !loading && (
         <div className="py-8 text-center">
-          <span className="text-gray-400">Nenhuma transferência encontrada</span>
+          <span className="text-gray-400">{t[currentLang].noTransfers}</span>
         </div>
       )}
     </div>

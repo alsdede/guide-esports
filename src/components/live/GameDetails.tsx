@@ -18,13 +18,13 @@ interface Player {
 interface Game {
   duration: string;
   status: string;
-  kills: { team1: number; team2: number };
-  gold: { team1: number; team2: number };
-  objectives: {
+  kills?: { team1: number; team2: number };
+  gold?: { team1: number; team2: number };
+  objectives?: {
     team1: { inhibitors: number; barons: number; towers: number; dragons: string[] };
     team2: { inhibitors: number; barons: number; towers: number; dragons: string[] };
   };
-  players: {
+  players?: {
     team1: Player[];
     team2: Player[];
   };
@@ -125,7 +125,9 @@ function PlayerRow({ player }: { player: Player }) {
 }
 
 export default function GameDetails({ game, teams }: GameDetailsProps) {
-  const goldPercentage = (game.gold.team1 / (game.gold.team1 + game.gold.team2)) * 100;
+  console.log("GAME AAAA",game)
+  const totalGold = 0
+  const goldPercentage = totalGold > 0 ? ((game.gold?.team1 || 0) / totalGold) * 100 : 50;
   
   return (
     <div className="rounded-lg border border-slate-700 bg-slate-800 text-white shadow-sm overflow-hidden mt-4">
@@ -137,7 +139,7 @@ export default function GameDetails({ game, teams }: GameDetailsProps) {
             <line x1="12" x2="15" y1="14" y2="11"></line>
             <circle cx="12" cy="14" r="8"></circle>
           </svg>
-          <time className="text-xs text-gray-300">{game.duration}</time>
+          {/* <time className="text-xs text-gray-300">{game.duration}</time> */}
         </div>
         
         <div className="flex gap-2">
@@ -146,10 +148,10 @@ export default function GameDetails({ game, teams }: GameDetailsProps) {
           </span>
           <div className="flex items-center justify-center gap-1">
             <div className="inline-flex items-center justify-center rounded-md text-sm font-medium bg-slate-600 border border-slate-500 h-10 w-10 px-3 text-white">
-              {game.kills.team1}
+              {game.kills?.team1 || 0}
             </div>
             <div className="inline-flex items-center justify-center rounded-md text-sm font-medium bg-slate-600 border border-slate-500 h-10 w-10 px-3 text-white">
-              {game.kills.team2}
+              {game.kills?.team2 || 0}
             </div>
           </div>
           <span className="relative flex shrink-0 overflow-hidden h-10 w-10 bg-slate-600 p-2 rounded-md">
@@ -172,7 +174,7 @@ export default function GameDetails({ game, teams }: GameDetailsProps) {
           <div className="flex justify-between px-4 gap-4">
             <div className="flex justify-between w-full">
               <div className="flex gap-3 text-sm font-semibold flex-row">
-                {game.objectives.team1.dragons.map((dragon, index) => (
+                {(game.objectives?.team1?.dragons || []).map((dragon, index) => (
                   <p key={index}>
                     <Image alt={dragon} loading="lazy" width="19" height="19" src={`/images/dragon-${dragon}.svg`} />
                   </p>
@@ -180,15 +182,15 @@ export default function GameDetails({ game, teams }: GameDetailsProps) {
               </div>
               <div className="flex gap-3 text-sm font-semibold flex-row">
                 <div className="flex gap-1 items-center flex-row text-white">
-                  {game.objectives.team1.inhibitors}
+                  {game.objectives?.team1?.inhibitors || 0}
                   <Image alt="Inhibitors" loading="lazy" width="19" height="19" src="/objectives/inhibitor@blue.png" />
                 </div>
                 <div className="flex gap-1 items-center flex-row text-white">
-                  {game.objectives.team1.barons}
+                  {game.objectives?.team1?.barons || 0}
                   <Image alt="Barons" loading="lazy" width="19" height="19" src="/objectives/baron@blue.png" />
                 </div>
                 <div className="flex gap-1 items-center flex-row text-white">
-                  {game.objectives.team1.towers}
+                  {game.objectives?.team1?.towers || 0}
                   <Image alt="Towers" loading="lazy" width="19" height="19" src="/objectives/turret@blue.png" />
                 </div>
               </div>
@@ -196,20 +198,20 @@ export default function GameDetails({ game, teams }: GameDetailsProps) {
             <div className="flex justify-between w-full">
               <div className="flex gap-3 text-sm font-semibold flex-row-reverse">
                 <div className="flex gap-1 items-center flex-row-reverse text-white">
-                  {game.objectives.team2.inhibitors}
+                  {game.objectives?.team2?.inhibitors || 0}
                   <Image alt="Inhibitors" loading="lazy" width="19" height="19" src="/objectives/inhibitor@red.png" />
                 </div>
                 <div className="flex gap-1 items-center flex-row-reverse text-white">
-                  {game.objectives.team2.barons}
+                  {game.objectives?.team2?.barons || 0}
                   <Image alt="Barons" loading="lazy" width="19" height="19" src="/objectives/baron@red.png" />
                 </div>
                 <div className="flex gap-1 items-center flex-row-reverse text-white">
-                  {game.objectives.team2.towers}
+                  {game.objectives?.team2?.towers || 0}
                   <Image alt="Towers" loading="lazy" width="19" height="19" src="/objectives/turret@red.png" />
                 </div>
               </div>
               <div className="flex gap-3 text-sm font-semibold flex-row-reverse">
-                {game.objectives.team2.dragons.map((dragon, index) => (
+                {(game.objectives?.team2?.dragons || []).map((dragon, index) => (
                   <p key={index}>
                     <Image alt={dragon} loading="lazy" width="19" height="19" src={`/images/dragon-${dragon}.svg`} />
                   </p>
@@ -223,7 +225,7 @@ export default function GameDetails({ game, teams }: GameDetailsProps) {
           <div className="flex items-center gap-4 px-2">
             <div className="flex gap-2">
               <span className="text-gray-300">Ouro</span>
-              <span className="font-semibold text-white">{game.gold.team1.toLocaleString()}</span>
+              <span className="font-semibold text-white">{(game.gold?.team1 || 0).toLocaleString()}</span>
             </div>
             <div className="relative h-4 w-full overflow-hidden rounded-full bg-red-800">
               <div 
@@ -232,7 +234,7 @@ export default function GameDetails({ game, teams }: GameDetailsProps) {
               />
             </div>
             <div className="flex gap-2">
-              <span className="font-semibold text-white">{game.gold.team2.toLocaleString()}</span>
+              <span className="font-semibold text-white">{(game.gold?.team2 || 0).toLocaleString()}</span>
               <span className="text-gray-300">Ouro</span>
             </div>
           </div>
@@ -271,7 +273,7 @@ export default function GameDetails({ game, teams }: GameDetailsProps) {
               </tr>
             </thead>
             <tbody>
-              {game.players.team1.map((player, index) => (
+              {(game.players?.team1 || []).map((player, index) => (
                 <PlayerRow key={index} player={player} />
               ))}
             </tbody>
@@ -311,7 +313,7 @@ export default function GameDetails({ game, teams }: GameDetailsProps) {
               </tr>
             </thead>
             <tbody>
-              {game.players.team2.map((player, index) => (
+              {(game.players?.team2 || []).map((player, index) => (
                 <PlayerRow key={index} player={player} />
               ))}
             </tbody>

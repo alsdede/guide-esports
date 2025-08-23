@@ -328,7 +328,42 @@ export const getStandingsV3 = async (tournamentId: string, hl: string = "pt-BR")
   }
 };
 // Get live game data
-export const getLiveGameData = async (gameId: string, startTime?: string): Promise<LiveGameData | null> => {
+export const getLiveGameWindowData = async (gameId: string, startTime?: string): Promise<LiveGameData | null> => {
+  try {
+    // Se não foi fornecido startTime, calcular o tempo "redondo" com delay de 30 segundos
+    if (!startTime) {
+      const now = new Date();
+      // Subtrair 30 segundos para evitar erro de "too close to current time"
+      now.setSeconds(now.getSeconds() - 30);
+      
+      // Arredondar para múltiplo de 10 segundos (00, 10, 20, 30, 40, 50)
+      const roundedSeconds = Math.floor(now.getSeconds() / 10) * 10;
+      const roundedTime = new Date(now);
+      roundedTime.setSeconds(roundedSeconds, 0); // Zerar os milissegundos também
+      startTime = roundedTime.toISOString();
+    }
+
+    const url = `https://feed.lolesports.com/livestats/v1/window/${gameId}?startingTime=${startTime}`;
+    
+    console.log(`Fetching live game window data from: ${url}`);
+    console.log(`Using startTime: ${startTime}`);
+    
+    const response = await fetch(url);
+    
+    // if (!response.ok) {
+    //   throw new Error(`HTTP error! status: ${response.status}`);
+    // }
+     
+    const data = await response.json();
+    console.log("Live game data window response:", data);
+    
+    return data;
+  } catch (error) {
+    console.error('Failed to fetch live game data:', error);
+    return null;
+  }
+};
+export const getLiveGameDetailsData = async (gameId: string, startTime?: string): Promise<LiveGameData | null> => {
   try {
     // Se não foi fornecido startTime, calcular o tempo "redondo" com delay de 30 segundos
     if (!startTime) {
@@ -345,7 +380,7 @@ export const getLiveGameData = async (gameId: string, startTime?: string): Promi
 
     const url = `https://feed.lolesports.com/livestats/v1/details/${gameId}?startingTime=${startTime}`;
     
-    console.log(`Fetching live game data from: ${url}`);
+    console.log(`Fetching live game data DETAILS from: ${url}`);
     console.log(`Using startTime: ${startTime}`);
     
     const response = await fetch(url);
@@ -355,7 +390,7 @@ export const getLiveGameData = async (gameId: string, startTime?: string): Promi
     // }
      
     const data = await response.json();
-    console.log("Live game data response:", data);
+    console.log("Live game data response DETAILS:", data);
     
     return data;
   } catch (error) {
@@ -363,7 +398,6 @@ export const getLiveGameData = async (gameId: string, startTime?: string): Promi
     return null;
   }
 };
-
 // Get game window data (timeline)
 export const getGameWindow = async (gameId: string, startTime?: string): Promise<unknown> => {
   try {
@@ -441,7 +475,7 @@ const lolEsportsService = {
   getTodayMatches,
   getEventDetails,
   getStandings,
-  getLiveGameData,
+
   getGameWindow,
   getISODateMultiplyOf10,
   getLeagues,

@@ -8,13 +8,7 @@ import GameDetails from "@/components/live/GameDetails";
 import StreamPlayer from "@/components/live/StreamPlayer";
 import UpcomingMatches from "@/components/live/UpcomingMatches";
 import RecentResults from "@/components/live/RecentResults";
-import NoSSR from "@/components/NoSSR";
-import {
-  getEventDetails,
-  type EventDetails,
-  getLiveGameDetailsData,
-  getLiveGameWindowData,
-} from "@/services";
+import { getLiveGameData, getEventDetails } from "@/services";
 
 // Mock data para demonstração
 const mockMatchData = {
@@ -211,209 +205,9 @@ export default function LiveMatchPage() {
   const [activeGame, setActiveGame] = useState(1);
   const [matchData, setMatchData] = useState(mockMatchData);
   const [activeGameId, setActiveGameId] = useState("");
-  const [gameStatus, setGameStatus] = useState<
-    "loading" | "unstarted" | "inProgress" | "completed"
-  >("loading");
+  const [gameStatus, setGameStatus] = useState<'loading' | 'unstarted' | 'inProgress' | 'completed'>('loading');
+  const [eventData, setEventData] = useState<any>(null);
   const [statusMessage, setStatusMessage] = useState<string>("");
-  const [allGames, setAllGames] = useState<EventDetails["match"]["games"]>([]);
-
-  // useEffect para buscar dados do jogo ao vivo
-  useEffect(() => {
-    if (!activeGameId) return;
-
-    let intervalId: NodeJS.Timeout | null = null;
-    const timeoutId: NodeJS.Timeout | null = null;
-
-    // Função para processar dados ao vivo e atualizar o jogo
-    const processLiveData = (detailsData: unknown, windowData: unknown) => {
-      if (!detailsData || !windowData) return;
-
-      const details = detailsData as Record<string, unknown>;
-      const window = windowData as Record<string, unknown>;
-
-      // Pegar o frame mais recente
-      const latestDetailFrame = (details.frames as Array<unknown>)?.[
-        ((details.frames as Array<unknown>)?.length || 1) - 1
-      ];
-      const latestWindowFrame = (window.frames as Array<unknown>)?.[
-        ((window.frames as Array<unknown>)?.length || 1) - 1
-      ];
-
-      if (!latestDetailFrame || !latestWindowFrame) return;
-
-      const detailFrame = latestDetailFrame as Record<string, unknown>;
-      const windowFrame = latestWindowFrame as Record<string, unknown>;
-
-      // Criar dados do jogo baseados nos dados ao vivo
-      const liveGame = {
-        id: activeGame,
-        duration: "Em andamento", // Pode calcular baseado no timestamp
-        status:
-          (windowFrame.gameState as string) === "finished"
-            ? "finished"
-            : "live",
-        winner:
-          (windowFrame.gameState as string) === "finished"
-            ? ((windowFrame.blueTeam as Record<string, unknown>)
-                .totalKills as number) >
-              ((windowFrame.redTeam as Record<string, unknown>)
-                .totalKills as number)
-              ? "team1"
-              : "team2"
-            : "team1",
-        kills: {
-          team1: (windowFrame.blueTeam as Record<string, unknown>)
-            .totalKills as number,
-          team2: (windowFrame.redTeam as Record<string, unknown>)
-            .totalKills as number,
-        },
-        gold: {
-          team1: (windowFrame.blueTeam as Record<string, unknown>)
-            .totalGold as number,
-          team2: (windowFrame.redTeam as Record<string, unknown>)
-            .totalGold as number,
-        },
-        objectives: {
-          team1: {
-            inhibitors: (windowFrame.blueTeam as Record<string, unknown>)
-              .inhibitors as number,
-            barons: (windowFrame.blueTeam as Record<string, unknown>)
-              .barons as number,
-            towers: (windowFrame.blueTeam as Record<string, unknown>)
-              .towers as number,
-            dragons: (windowFrame.blueTeam as Record<string, unknown>)
-              .dragons as string[],
-          },
-          team2: {
-            inhibitors: (windowFrame.redTeam as Record<string, unknown>)
-              .inhibitors as number,
-            barons: (windowFrame.redTeam as Record<string, unknown>)
-              .barons as number,
-            towers: (windowFrame.redTeam as Record<string, unknown>)
-              .towers as number,
-            dragons: (windowFrame.redTeam as Record<string, unknown>)
-              .dragons as string[],
-          },
-        },
-        players: {
-          team1: (
-            (detailFrame.participants as Array<Record<string, unknown>>)?.slice(
-              0,
-              5
-            ) || []
-          ).map((player: Record<string, unknown>, index: number) => {
-            const windowPlayer = (
-              (windowFrame.blueTeam as Record<string, unknown>)
-                .participants as Array<Record<string, unknown>>
-            )?.[index];
-            const gameMetadata = (
-              (window.gameMetadata as Record<string, unknown>)
-                ?.blueTeamMetadata as Record<string, unknown>
-            )?.participantMetadata as Array<Record<string, unknown>>;
-            const metadata = gameMetadata?.[index];
-
-            return {
-              champion: (metadata?.championId as string) || "Unknown",
-              playerName:
-                (metadata?.summonerName as string) ||
-                `Player ${player.participantId as number}`,
-              level: player.level as number,
-              health: {
-                current: (windowPlayer?.currentHealth as number) || 0,
-                max: (windowPlayer?.maxHealth as number) || 0,
-              },
-              items: ((player.items as Array<number>) || []).map((item) =>
-                item ? String(item) : null
-              ),
-              cs: player.creepScore as number,
-              kills: player.kills as number,
-              deaths: player.deaths as number,
-              assists: player.assists as number,
-              gold: player.totalGoldEarned as number,
-              goldDiff: 0, // Pode calcular baseado na diferença com o oponente
-              isAlive: ((windowPlayer?.currentHealth as number) || 0) > 0,
-            };
-          }),
-          team2: (
-            (detailFrame.participants as Array<Record<string, unknown>>)?.slice(
-              5,
-              10
-            ) || []
-          ).map((player: Record<string, unknown>, index: number) => {
-            const windowPlayer = (
-              (windowFrame.redTeam as Record<string, unknown>)
-                .participants as Array<Record<string, unknown>>
-            )?.[index];
-            const gameMetadata = (
-              (window.gameMetadata as Record<string, unknown>)
-                ?.redTeamMetadata as Record<string, unknown>
-            )?.participantMetadata as Array<Record<string, unknown>>;
-            const metadata = gameMetadata?.[index];
-
-            return {
-              champion: (metadata?.championId as string) || "Unknown",
-              playerName:
-                (metadata?.summonerName as string) ||
-                `Player ${player.participantId as number}`,
-              level: player.level as number,
-              health: {
-                current: (windowPlayer?.currentHealth as number) || 0,
-                max: (windowPlayer?.maxHealth as number) || 0,
-              },
-              items: ((player.items as Array<number>) || []).map((item) =>
-                item ? String(item) : null
-              ),
-              cs: player.creepScore as number,
-              kills: player.kills as number,
-              deaths: player.deaths as number,
-              assists: player.assists as number,
-              gold: player.totalGoldEarned as number,
-              goldDiff: 0, // Pode calcular baseado na diferença com o oponente
-              isAlive: ((windowPlayer?.currentHealth as number) || 0) > 0,
-            };
-          }),
-        },
-      };
-
-      // Atualizar o matchData com dados ao vivo
-      setMatchData((prevData) => ({
-        ...prevData,
-        games: prevData.games.map((game, index) =>
-          index === activeGame - 1 ? liveGame : game
-        ),
-        status:
-          (windowFrame.gameState as string) === "finished"
-            ? "completed"
-            : "live",
-      }));
-    };
-
-    // Função para buscar dados ao vivo
-    const fetchLiveData = async () => {
-      try {
-        const [detailsData, windowData] = await Promise.all([
-          getLiveGameDetailsData(activeGameId),
-          getLiveGameWindowData(activeGameId),
-        ]);
-
-        processLiveData(detailsData, windowData);
-      } catch (error) {
-        console.error("Erro ao buscar dados ao vivo:", error);
-      }
-    };
-
-    // Buscar dados iniciais
-    fetchLiveData();
-
-    // Configurar atualização em intervalos
-    intervalId = setInterval(fetchLiveData, 10000); // Atualizar a cada 10 segundos
-
-    // Cleanup function
-    return () => {
-      if (intervalId) clearInterval(intervalId);
-      if (timeoutId) clearTimeout(timeoutId);
-    };
-  }, [activeGameId, activeGame]);
 
   // useEffect para buscar detalhes do evento e determinar o jogo ativo
   useEffect(() => {
@@ -421,68 +215,56 @@ export default function LiveMatchPage() {
       if (!params.id) return;
 
       try {
-        setGameStatus("loading");
+        setGameStatus('loading');
         const eventDetails = await getEventDetails(String(params.id));
         console.log("RES EVENTO", eventDetails);
-
-        if (eventDetails && eventDetails.match.games) {
+        
+        if (eventDetails && eventDetails.match && eventDetails.match.games) {
+          setEventData(eventDetails);
           const games = eventDetails.match.games;
-          console.log("Games encontrados:", games);
-          setAllGames(games); // Armazenar todos os jogos
-
+          
           // Encontrar jogo em andamento
-          const inProgressGame = games.find(
-            (game) => game.state === "inProgress"
-          );
-
+          const inProgressGame = games.find((game: any) => game.state === 'inProgress');
+          
           if (inProgressGame) {
             // Há um jogo em andamento
-            setActiveGame(inProgressGame.number); // Define a tab ativa baseada no número do jogo
-            setGameStatus("inProgress");
+            setActiveGameId(inProgressGame.id);
+            setGameStatus('inProgress');
             setStatusMessage(`Jogo ${inProgressGame.number} em andamento`);
           } else {
             // Verificar se há jogos não iniciados
-            const unstartedGame = games.find(
-              (game) => game.state === "unstarted"
-            );
-
+            const unstartedGame = games.find((game: any) => game.state === 'unstarted');
+            
             if (unstartedGame) {
               // Há jogos que ainda não começaram
-              setGameStatus("unstarted");
-              setStatusMessage(
-                `Aguardando início do jogo ${unstartedGame.number}`
-              );
-              setActiveGame(unstartedGame.number); // Define a tab do próximo jogo
+              setGameStatus('unstarted');
+              setStatusMessage(`Aguardando início do jogo ${unstartedGame.number}`);
             } else {
               // Todos os jogos estão completos - pegar o último jogo
               const lastGame = games[games.length - 1];
               if (lastGame) {
-                setGameStatus("completed");
-                setStatusMessage(
-                  `Partida finalizada - Jogo ${lastGame.number}`
-                );
-                setActiveGame(lastGame.number); // Define a tab do último jogo
+                setActiveGameId(lastGame.id);
+                setGameStatus('completed');
+                setStatusMessage(`Partida finalizada - Jogo ${lastGame.number}`);
               }
             }
           }
 
           // Atualizar dados da partida com informações reais
-          if (eventDetails.match && eventDetails.match.teams) {
-            setMatchData((prevData) => ({
+          if (eventDetails.match.teams) {
+            setMatchData(prevData => ({
               ...prevData,
               id: eventDetails.id,
               team1: {
                 name: eventDetails.match.teams[0]?.name || prevData.team1.name,
-                shortName:
-                  eventDetails.match.teams[0]?.code || prevData.team1.shortName,
+                shortName: eventDetails.match.teams[0]?.code || prevData.team1.shortName,
                 logo: eventDetails.match.teams[0]?.image || prevData.team1.logo,
                 wins: eventDetails.match.teams[0]?.result?.gameWins || 0,
                 losses: 0,
               },
               team2: {
                 name: eventDetails.match.teams[1]?.name || prevData.team2.name,
-                shortName:
-                  eventDetails.match.teams[1]?.code || prevData.team2.shortName,
+                shortName: eventDetails.match.teams[1]?.code || prevData.team2.shortName,
                 logo: eventDetails.match.teams[1]?.image || prevData.team2.logo,
                 wins: eventDetails.match.teams[1]?.result?.gameWins || 0,
                 losses: 0,
@@ -494,7 +276,7 @@ export default function LiveMatchPage() {
         }
       } catch (error) {
         console.error("Erro ao buscar detalhes do evento:", error);
-        setGameStatus("completed");
+        setGameStatus('completed');
         setStatusMessage("Erro ao carregar dados da partida");
       }
     };
@@ -502,15 +284,52 @@ export default function LiveMatchPage() {
     fetchEventDetails();
   }, [params.id]);
 
-  // useEffect para atualizar activeGameId quando activeGame ou allGames mudam
+  // useEffect para buscar dados do jogo ao vivo
   useEffect(() => {
-    console.log("allGames", allGames, "activegame", activeGame, "allGames");
-    if (allGames.length > 0 && activeGame > 0) {
-      const selectedGame = allGames[activeGame - 1]; // Array é 0-indexed, tab é 1-indexed
-      setActiveGameId(selectedGame.id);
-      console.log(`Tab ativa: ${activeGame}, Game ID: ${selectedGame.id}`);
+    if (!activeGameId || gameStatus === 'unstarted') return;
+
+    let intervalId: NodeJS.Timeout | null = null;
+    let timeoutId: NodeJS.Timeout | null = null;
+
+    const fetchLiveData = () => {
+      getLiveGameData(activeGameId).then((res) => {
+        console.log("res LIVE GAME DATA", res);
+        // Aqui você pode processar os dados do jogo ao vivo
+        // e atualizar o estado da UI conforme necessário
+      });
+    };
+
+    // Fazer primeira requisição imediatamente (apenas se não for unstarted)
+    if (gameStatus !== 'unstarted') {
+      fetchLiveData();
     }
-  }, [activeGame, allGames]);
+
+    // Só configurar intervalo se o jogo estiver em andamento
+    if (gameStatus === 'inProgress') {
+      // Calcular quanto tempo falta para o próximo múltiplo de 10 segundos
+      const now = new Date();
+      const seconds = now.getSeconds();
+      const millisecondsIntoSecond = now.getMilliseconds();
+      
+      // Próximo múltiplo de 10 segundos
+      const nextRoundSeconds = Math.ceil(seconds / 10) * 10;
+      const delayToNextRound = (nextRoundSeconds - seconds) * 1000 - millisecondsIntoSecond;
+
+      // Timeout para sincronizar com o próximo múltiplo de 10 segundos
+      timeoutId = setTimeout(() => {
+        fetchLiveData(); // Fazer requisição no tempo "redondo"
+        
+        // Agora configurar intervalo regular de 10 segundos
+        intervalId = setInterval(fetchLiveData, 10000);
+      }, delayToNextRound);
+    }
+
+    // Cleanup: limpar timeout e intervalo
+    return () => {
+      if (timeoutId) clearTimeout(timeoutId);
+      if (intervalId) clearInterval(intervalId);
+    };
+  }, [activeGameId, gameStatus]);
 
   useEffect(() => {
     const matchId = Array.isArray(params.id) ? params.id[0] : params.id;
@@ -578,7 +397,7 @@ export default function LiveMatchPage() {
   }, [params.id, currentMatch, getCachedMatch]);
 
   // Renderizar mensagem de status se jogo não iniciou
-  if (gameStatus === "unstarted") {
+  if (gameStatus === 'unstarted') {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-gray-900">
         <div className="container mx-auto px-4 py-8">
@@ -590,7 +409,9 @@ export default function LiveMatchPage() {
                   <div className="text-yellow-400 text-xl font-bold mb-2">
                     ⏰ Jogo ainda não iniciado
                   </div>
-                  <div className="text-gray-300">{statusMessage}</div>
+                  <div className="text-gray-300">
+                    {statusMessage}
+                  </div>
                 </div>
               </div>
               <div className="flex flex-col gap-4 md:gap-8 lg:col-span-3">
@@ -615,13 +436,11 @@ export default function LiveMatchPage() {
         <div className="flex flex-1 flex-col gap-4 sm:gap-8 pt-4 sm:pt-8">
           {/* Status da partida */}
           {statusMessage && (
-            <div
-              className={`text-center py-2 px-4 rounded-lg ${
-                gameStatus === "inProgress"
-                  ? "bg-green-500/10 border border-green-500/20 text-green-400"
-                  : "bg-gray-500/10 border border-gray-500/20 text-gray-400"
-              }`}
-            >
+            <div className={`text-center py-2 px-4 rounded-lg ${
+              gameStatus === 'inProgress' 
+                ? 'bg-green-500/10 border border-green-500/20 text-green-400' 
+                : 'bg-gray-500/10 border border-gray-500/20 text-gray-400'
+            }`}>
               {statusMessage}
             </div>
           )}
@@ -633,18 +452,16 @@ export default function LiveMatchPage() {
               <MatchHeader match={matchData} />
 
               {/* Game Tabs and Details */}
-              <NoSSR fallback={<div className="h-32 bg-slate-800 rounded-lg animate-pulse"></div>}>
-                <GameTabs
-                  games={matchData.games}
-                  activeGame={activeGame}
-                  onGameChange={setActiveGame}
-                />
+              <GameTabs
+                games={matchData.games}
+                activeGame={activeGame}
+                onGameChange={setActiveGame}
+              />
 
-                <GameDetails
-                  game={matchData.games[1 - 1]}
-                  teams={[matchData.team1, matchData.team2]}
-                />
-              </NoSSR>
+              <GameDetails
+                game={matchData.games[activeGame - 1]}
+                teams={[matchData.team1, matchData.team2]}
+              />
 
               {/* Stream Player */}
               <StreamPlayer
